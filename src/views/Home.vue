@@ -45,11 +45,11 @@ export default {
     .flex(row, space-between, center);
     flex-basis: 320px;
     min-width: 270px;
-    height: auto;
+    height: 120px;
     padding: 20px 10px;
     background: #fff;
     border-radius: 5px;
-    margin: 15px auto;
+    margin: 15px auto 15px 0;
     box-shadow: 6px 6px 10px rgba(34, 34, 34, 0.38);
     cursor: pointer;
     transition: transform .3s linear;
@@ -69,10 +69,11 @@ export default {
     & .home-item-content {
       .flex(column, flex-start, flex-start);
       width: calc(100% - 80px);
+      min-height: 60px;
       &-title {
         color: #2c2c2c;
         font-weight: bold;
-        font-size: 20px;
+        font-size: 18px;
         line-height: 23px;
         margin-bottom: 5px;
       }

@@ -14,14 +14,17 @@ export default new Vuex.Store({
           {
             name: 'Список покупок',
             link: '/shoppinglist',
+            description: '',
           },
           {
             name: 'Быстрый доступ к документам',
             link: '/docsaccess',
+            description: '',
           },
           {
             name: 'Оформление новых заказов в 2 клика',
             link: '/simpleorder',
+            description: '',
           },
         ],
       },
@@ -33,14 +36,17 @@ export default new Vuex.Store({
           {
             name: 'Контроль поступления товара',
             link: '/productcontrol',
+            description: 'Оперативная информация о количестве оформленного к отгрузке',
           },
           {
             name: 'Данные о машинах и водителях',
             link: '/aboutcars',
+            description: 'Полная информация о доставке с возможностью отслеживания местоположения на карте',
           },
           {
             name: 'Отслеживание местоположения на карте',
             link: '/placeholder',
+            description: '',
           },
         ],
       },
@@ -52,14 +58,17 @@ export default new Vuex.Store({
           {
             name: 'График закупок',
             link: '/purchaseschedule',
+            description: 'График закупок по месяцам',
           },
           {
             name: 'Анализ цен',
             link: '/priceanalys',
+            description: 'Диаграмма цен по месяцам',
           },
           {
             name: 'Анализ продаж',
             link: '/salesanalys',
+            description: '',
           },
         ],
       },
@@ -71,6 +80,7 @@ export default new Vuex.Store({
           {
             name: 'Загрузка документов компании',
             link: '/docsloader',
+            description: '',
           },
         ],
       },
@@ -82,18 +92,22 @@ export default new Vuex.Store({
           {
             name: 'Текущие авансы',
             link: '/debts',
+            description: '',
           },
           {
             name: 'Формирование актов сверки',
             link: '/acts',
+            description: 'Online формирование акта-сверки',
           },
           {
             name: 'Контроль лимитов',
             link: '/limits',
+            description: 'Информация о состоянии кредитных лимитов',
           },
           {
             name: 'График платежей',
             link: '/paysschedule',
+            description: '',
           },
         ],
       },
@@ -105,6 +119,7 @@ export default new Vuex.Store({
           {
             name: 'Инструкция по работе в личном кабинете',
             link: '/instruction',
+            description: '',
           },
         ],
       },

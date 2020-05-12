@@ -1,15 +1,17 @@
 <template>
-  <div class="category">
+  <div class="home category">
     <div class="category-title">
       <img :src="getPath(getCategoryArray[0].img)" width="36px">
       <h1>{{ getCategoryArray[0].name }}</h1>
     </div>
-    <div class="category-item" v-for="(item, i) in getCategoryArray[0].links"
+    <div class="home-item" v-for="(item, i) in getCategoryArray[0].links"
                                :key="i"
                                @click="goTo(`/${getCategoryName}${item.link}`)">
-      <img :src="getPath(item.link.substr(1))" width="50px">
-      <h2>{{ item.name }}</h2>
-      <span class="hidden"></span>
+      <img :src="getPath(item.link.substr(1))" width="40px">
+      <div class="home-item-content">
+        <h2 class="home-item-content-title">{{ item.name }}</h2>
+        <span v-show="item.description.length > 0"> {{ item.description }} </span>
+      </div>
     </div>
   </div>
 </template>
@@ -61,9 +63,9 @@ export default {
       letter-spacing: 1.5px;
       font-weight: 400;
     }
-    & img {
-      filter: grayscale(1);
-    }
+    // & img {
+    //   filter: grayscale(1);
+    // }
   }
 
   & &-item {
@@ -73,7 +75,7 @@ export default {
     padding: 20px 10px;
     background: #fff;
     border-radius: 5px;
-    margin: 15px auto;
+    margin: 15px auto 15px 0;
     box-shadow: 6px 6px 10px rgba(34, 34, 34, 0.38);
     cursor: pointer;
     transition: transform .3s linear;
