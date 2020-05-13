@@ -16,6 +16,7 @@
 
 <script>
 // @ is an alias to /src
+import Funcs from '@/assets/js-funcs/default-funcs';
 
 export default {
   name: 'Home',
@@ -27,6 +28,20 @@ export default {
     goTo(link) {
       this.$router.push({ path: link });
     },
+  },
+  mounted() {
+    Funcs.doRequest(
+      'post',
+      'https://personal.back.unlogic.ru/api/v1/auth/data',
+      {
+        session: 'asd',
+      },
+      null,
+      (res) => {
+        window.console.log(res);
+      },
+      () => { window.console.log('ERROR'); },
+    );
   },
 };
 
