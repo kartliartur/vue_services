@@ -225,6 +225,7 @@ export default {
     & .main-wrap {
       overflow: visible;
       padding: 0;
+      height: auto;
       & .content-wrap {
         overflow-y: unset;
         padding: 50px 10px;
