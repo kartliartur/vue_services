@@ -47,7 +47,7 @@
     <!-- MAIN WRAP START -->
     <div class="main-wrap">
       <h1>Личный кабинет</h1>
-      <h2>ООО КАРТЛИ</h2>
+      <h2>{{ this.$store.state.company_name }}</h2>
       <!-- PAGES CONTENT INSERT AFTER IT -->
       <div class="content-wrap">
         <router-view/>
@@ -164,10 +164,11 @@ export default {
     & .content-wrap {
       position: relative;
       overflow-y: scroll;
+      overflow-x: visible;
       width: 100%;
-      padding: 50px 10%;
-      min-height: 100%;
-      height: auto;
+      padding: 20px 10% 40px 10%;
+      height: 75%;
+      margin-top: 30px;
     }
   }
 }
@@ -229,6 +230,9 @@ export default {
       & .content-wrap {
         overflow-y: unset;
         padding: 50px 10px;
+        margin-left: 0;
+        width: 100%;
+        height: auto;
       }
     }
   }

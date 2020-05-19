@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="home-item" v-for="(item, i) in this.$store.state.categorys"
+    <div class="home-item" v-for="(item, i) in this.$store.state.categories"
                            :key="i"
                            @click="goTo(item.link)">
       <img :src="getPath(item)" alt="">
@@ -16,7 +16,6 @@
 
 <script>
 // @ is an alias to /src
-import Funcs from '@/assets/js-funcs/default-funcs';
 
 export default {
   name: 'Home',
@@ -30,18 +29,7 @@ export default {
     },
   },
   mounted() {
-    Funcs.doRequest(
-      'post',
-      'https://personal.back.unlogic.ru/api/v1/auth/data',
-      {
-        session: 'asd',
-      },
-      null,
-      (res) => {
-        window.console.log(res);
-      },
-      () => { window.console.log('ERROR'); },
-    );
+    this.$store.dispatch('login');
   },
 };
 

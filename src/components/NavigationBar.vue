@@ -21,21 +21,21 @@
               <img src="../assets/images/directory.png" class="gray-image">
               <a href="https://reference.kartli.ch/" target="_blank">Справочник продукции</a>
           </div>
-          <div class="nav-item-list-item">
+          <div class="nav-item-list-item" v-if="isAuth">
               <img src="" alt="">
-              <a href="/auth/">Вход</a>
+              <a href="https://passport.kartli.ch/account/">Вход</a>
           </div>
       </div>
     </div>
-    <div class="nav-item profile-wrap" @click="changeActiveMenu('profile')">
+    <div class="nav-item profile-wrap" @click="changeActiveMenu('profile')" v-if="!isAuth">
       <img src="../assets/images/main-man.png" width="25px" class="menu-icon active">
       <img src="../assets/images/man.png" width="25px" class="menu-icon hidden">
       <div class="nav-item-list profile-list" v-show="this.activeMenu === 'profile'">
           <div class="nav-item-list-item name-row">
-              <span>Артур Артурко</span>
+              <span>{{ getUserName }}</span>
           </div>
           <div class="nav-item-list-item">
-              <a href="/auth/">Выход</a>
+              <a href="https://passport.kartli.ch/auth/logout">Выход</a>
           </div>
       </div>
     </div>
@@ -43,6 +43,9 @@
 </template>
 
 <script>
+
+// import Funcs from '@/assets/js-funcs/default-funcs';
+
 export default {
   name: 'NavigationBar',
   data: () => ({
@@ -51,6 +54,17 @@ export default {
   methods: {
     changeActiveMenu(name) {
       this.activeMenu = name === this.activeMenu ? null : name;
+    },
+  },
+  computed: {
+    isAuth() {
+      return this.$store.state.user === null && this.$store.state.user === undefined;
+    },
+    getUserName() {
+      if (this.$store.state.user != null) {
+        return this.$store.state.user.name;
+      }
+      return '';
     },
   },
 };

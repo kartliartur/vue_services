@@ -10,7 +10,9 @@
       <img :src="getPath(item.link.substr(1))" width="40px">
       <div class="home-item-content">
         <h2 class="home-item-content-title">{{ item.name }}</h2>
-        <span v-show="item.description.length > 0"> {{ item.description }} </span>
+        <span v-show="item.description != undefined && item.description.length > 0">
+          {{ item.description }}
+        </span>
       </div>
     </div>
   </div>
@@ -34,9 +36,13 @@ export default {
   computed: {
     getCategoryName: () => window.location.pathname.substr(1),
     getCategoryArray() {
-      return this.$store.state.categorys
+      window.console.log(this.$store.state.categories);
+      return this.$store.state.categories
         .filter((item) => item.img === this.getCategoryName);
     },
+  },
+  mounted() {
+    this.$store.dispatch('login');
   },
 };
 
@@ -55,7 +61,7 @@ export default {
   & &-title {
     .flex(row, flex-start, flex-end);
     width: 100%;
-    padding: 10px 5px;
+    padding: 10px 0;
     & h1 {
       color: #fff;
       font-size: 2em;
