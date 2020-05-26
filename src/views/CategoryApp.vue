@@ -8,7 +8,13 @@
       <h2 v-if="this.$store.state.activeAppData.report.length !== 0">
         {{ this.$store.state.activeAppData.report }}
       </h2>
-      <myTable v-else :data="this.$store.state.activeAppData.data"/>
+      <h2 v-else-if="this.$store.state.activeAppData.data.length === 0">
+        Список пуст
+      </h2>
+      <myTable v-else
+        :data="this.$store.state.activeAppData.data"
+        :category="this.getCategoryName"
+        :app="this.getAppName"/>
     </div>
   </div>
 </template>

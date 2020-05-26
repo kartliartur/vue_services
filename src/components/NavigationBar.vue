@@ -1,6 +1,9 @@
 <template>
   <div class="nav-bar">
     <img src="../assets/images/back.svg" @click="$router.go(-1)" width="25px" title="Назад">
+    <InnBar @click.native="changeActiveMenu('inn', $event)"
+      :modalShow="this.activeMenu === 'inn'"
+      :currentInn="getInn"/>
     <div class="nav-item services-wrap" @click="changeActiveMenu('services')">
       <img src="../assets/images/main-menu.png" width="25px" class="menu-icon active">
       <img src="../assets/images/menu-black.png" width="25px" class="menu-icon hidden">
@@ -45,15 +48,27 @@
 <script>
 
 // import Funcs from '@/assets/js-funcs/default-funcs';
+import InnBar from '@/components/innBar.vue';
 
 export default {
   name: 'NavigationBar',
+  components: {
+    InnBar,
+  },
   data: () => ({
     activeMenu: null,
   }),
   methods: {
-    changeActiveMenu(name) {
-      this.activeMenu = name === this.activeMenu ? null : name;
+    changeActiveMenu(name, e) {
+      if (e !== undefined) {
+        if (e.target.title !== 'Админ панель') {
+          this.activeMenu = 'inn';
+        } else {
+          this.activeMenu = name === this.activeMenu ? null : name;
+        }
+      } else {
+        this.activeMenu = name === this.activeMenu ? null : name;
+      }
     },
   },
   computed: {
@@ -62,10 +77,12 @@ export default {
     },
     getUserName() {
       if (this.$store.state.user != null) {
-        return this.$store.state.user.name;
+        window.console.log(this.$store.state.user);
+        return `${this.$store.state.user.user.first_name} ${this.$store.state.user.user.last_name}`;
       }
       return '';
     },
+    getInn: () => localStorage.getItem('admin_inn'),
   },
 };
 </script>

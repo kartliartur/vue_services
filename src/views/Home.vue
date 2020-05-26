@@ -41,6 +41,7 @@ export default {
 .home {
   .flex(row, flex-start, center);
   flex-wrap: wrap;
+  flex-grow: 1;
   width: 100%;
   height: auto;
 
@@ -52,7 +53,7 @@ export default {
     padding: 20px 10px;
     background: #fff;
     border-radius: 5px;
-    margin: 15px auto 15px 0;
+    margin: 15px 10px 15px 0;
     box-shadow: 6px 6px 10px rgba(34, 34, 34, 0.38);
     cursor: pointer;
     transition: transform .3s linear;
@@ -95,4 +96,9 @@ export default {
   }
 }
 
+@media screen and (max-width: 850px) {
+  .home {
+    justify-content: space-around;
+  }
+}
 </style>

@@ -1,7 +1,8 @@
 <template>
   <div class="table-wrap">
     <table>
-      <tr v-for="(item, idx) in this.data" :key="idx">
+      <tr v-for="(item, idx) in this.data" :key="idx"
+          @click="requestAction()">
         <td v-for="(elem, i) in item" :key="i">
           {{ elem }}
         </td>
@@ -12,9 +13,19 @@
 
 <script type="text/javascript">
 
+import Funcs from '@/assets/js-funcs/default-funcs';
+
 export default {
   name: 'myTable',
-  props: ['data'],
+  props: ['data', 'category', 'app'],
+  methods: {
+    requestAction() {
+      const obj = Funcs.filterByParams(this.$store.state.categories, this.category, this.app);
+      window.console.log(this.category);
+      window.console.log(this.app);
+      window.console.log(obj);
+    },
+  },
 };
 </script>
 
@@ -25,6 +36,9 @@ export default {
 .table-wrap {
   width: 100%;
   height: auto;
+  background: #fff;
+  border-radius: 5px;
+  padding: 10px;
 
   & table {
     width: 100%;
@@ -39,9 +53,8 @@ export default {
       }
     }
     & tr:nth-child(2n) {
-      background: @green-color;
+      background: #f4f4f4;
       & td {
-        color: #fff;
       }
     }
   }

@@ -33,8 +33,12 @@ export default new Vuex.Store({
           (res) => {
             context.commit('categoriesMutation', res.data.data.categories);
             context.commit('serCompanyName', res.data.data.user.company.short_name);
-            context.commit('setUser', res.data.data.user.account_info);
-            context.commit('setINN', res.data.data.user.company.inn);
+            context.commit('setUser', res.data.data.user);
+            if (localStorage.getItem('admin_inn') === undefined && context.state.user.user.is_superuser === false) {
+              context.commit('setINN', res.data.data.user.company.inn);
+            } else {
+              context.commit('setINN', localStorage.getItem('admin_inn'));
+            }
             Funcs.getAppData(context, app);
           },
           () => { window.console.log('ERROR'); },
