@@ -21,7 +21,8 @@ export default {
   props: ['modalShow', 'currentInn'],
   methods: {
     innUpdate() {
-      if (this.currentInn.length === 12 && !Number.isNaN(+this.currentInn)) {
+      if (this.currentInn.length >= 10 && this.currentInn.length <= 12
+          && !Number.isNaN(+this.currentInn)) {
         localStorage.setItem('admin_inn', this.currentInn);
         window.location.reload();
         this.errorClass = false;
