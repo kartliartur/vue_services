@@ -149,7 +149,7 @@ export default {
 
     & h1, h2 {
       color: #fff;
-      font-weight: 400;
+      font-weight: 300;
       font-size: 28px;
       margin-top: 100px;
     }

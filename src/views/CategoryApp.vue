@@ -70,7 +70,7 @@ export default {
   & h2 {
     color: #fff;
     font-size: 1.5em;
-    font-weight: normal
+    font-weight: 300;
   }
 
   & &-title {
@@ -82,7 +82,7 @@ export default {
       font-size: 2em;
       margin: 0 10px;
       letter-spacing: 1.5px;
-      font-weight: 400;
+      font-weight: 300;
     }
     & img {
       filter: invert(1);

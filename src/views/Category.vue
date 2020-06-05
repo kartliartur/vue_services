@@ -67,7 +67,7 @@ export default {
       font-size: 2em;
       margin: 0 10px;
       letter-spacing: 1.5px;
-      font-weight: 400;
+      font-weight: 300;
     }
     // & img {
     //   filter: grayscale(1);
@@ -93,7 +93,7 @@ export default {
     }
 
     & h2 {
-      font-weight: 900;
+      font-weight: 300;
       font-size: 16px;
       text-align: center;
       width: 80%;

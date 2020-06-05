@@ -76,7 +76,7 @@ export default {
       min-height: 60px;
       &-title {
         color: #2c2c2c;
-        font-weight: bold;
+        font-weight: 400;
         font-size: 18px;
         line-height: 23px;
         margin-bottom: 5px;

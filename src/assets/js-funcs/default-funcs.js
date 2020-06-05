@@ -4,6 +4,37 @@ import Vue from 'vue';
 Vue.use(axios);
 
 export default {
+  dateToInputs: (date) => {
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    let monthBefore = date.getMonth() - 2;
+    if (month < 10) month = `0${month}`;
+    if (monthBefore < 10) monthBefore = `0${monthBefore}`;
+    if (day < 10) day = `0${day}`;
+    return [day, month, year, monthBefore];
+  },
+  downloadFile(blob, fileName, contentType) {
+    // if (content_type != 'aplication/pdf') {
+    //   var newBlob = new Blob([s2ab(btoa(blob))], {type: content_type});
+    // } else {
+    //   var newBlob = new Blob([blob], {type: content_type});
+    // }
+    const newBlob = new Blob([blob], { type: contentType });
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(newBlob);
+      return;
+    }
+    const data = window.URL.createObjectURL(newBlob);
+    const link = document.createElement('a');
+    link.href = data;
+    link.download = fileName;
+    link.click();
+    setTimeout(() => {
+      window.URL.revokeObjectURL(data);
+      link.remove();
+    }, 100);
+  },
   doRequest(type, url, data, params, success, error) {
     const preloadScreen = document.getElementById('preload');
     preloadScreen.setAttribute('style', 'display: flex;');
