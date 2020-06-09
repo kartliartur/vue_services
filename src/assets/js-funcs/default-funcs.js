@@ -35,12 +35,13 @@ export default {
       link.remove();
     }, 100);
   },
-  doRequest(type, url, data, params, success, error) {
+  doRequest(type, url, data, params, rT, success, error) {
     const preloadScreen = document.getElementById('preload');
     preloadScreen.setAttribute('style', 'display: flex;');
     axios({
-      method: type,
       url,
+      method: type,
+      responseType: rT,
       data,
       params,
       headers:
@@ -74,15 +75,16 @@ export default {
       window.console.log(appObj);
       const { data } = app;
       data.INN = context.state.inn;
-      if (appObj.date_start !== undefined) {
-        data.DateFirst = appObj.date_start;
-        data.DateLast = appObj.date_end;
+      if (appObj.inputs.length > 0) {
+        data.DateFirst = appObj.inputs.filter((item) => item.label === 'date_start')[0].value;
+        data.DateLast = appObj.inputs.filter((item) => item.label === 'date_end')[0].value;
       }
       this.doRequest(
         'post',
         context.state.base_url + appObj.path_get,
         data,
         null,
+        'json',
         (res) => {
           context.commit('setActiveAppDate', res.data);
         },

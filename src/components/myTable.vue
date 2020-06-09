@@ -160,6 +160,7 @@ export default {
           Date: `${Funcs.dateToInputs(new Date())[2]}-${Funcs.dateToInputs(new Date())[1]}-${Funcs.dateToInputs(new Date())[0]}`,
         },
         null,
+        'json',
         (blob) => {
           Funcs.downloadFile(blob, 'Акт сверки.pdf', 'application/pdf');
         },

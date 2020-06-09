@@ -3,6 +3,7 @@
     <div class="category-app-title">
       <img :src="getPath(getAppObject.link.substr(1))" width="36px">
       <h1>{{ getAppObject.name }}</h1>
+      <button @click="showModal = true">Надстройки</button>
     </div>
     <div class="category-app-content">
       <h2 v-if="this.$store.state.activeAppData.report.length !== 0">
@@ -15,6 +16,20 @@
         :data="this.$store.state.activeAppData.data"
         :category="this.getCategoryName"
         :app="this.getAppName"/>
+    </div>
+    <div :class="{ 'modal-wrap': true, 'active-modal-wrap': showModal }">
+      <div class="hover"></div>
+      <div class="modal-frame">
+        <span @click="showModal=false" class="close">×</span>
+        <h2>Надстройки</h2>
+        <div class="frame-content">
+          <div class="content-item" v-for="(item, idx) in getAppObject.inputs" :key="idx">
+            <span>asd</span>
+            <input :type="item.type" v-model="item.value" :name="item.label">
+          </div>
+          <button @click="login()">Применить</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -29,10 +44,21 @@ export default {
   components: {
     myTable,
   },
+  data: () => ({
+    showModal: false,
+  }),
   methods: {
     getPath: (img) => {
       const images = require.context('../assets/images/', false, /\.svg$/);
       return images(`./${img}.svg`);
+    },
+    login() {
+      this.$store.dispatch('login', {
+        name: this.getAppName,
+        category: this.getCategoryName,
+        data: {},
+      });
+      this.showModal = this.showModal === true ? false : this.showModal;
     },
   },
   computed: {
@@ -47,11 +73,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('login', {
-      name: this.getAppName,
-      category: this.getCategoryName,
-      data: {},
-    });
+    this.login();
   },
 };
 
@@ -86,6 +108,11 @@ export default {
     }
     & img {
       filter: invert(1);
+    }
+    & button {
+      display: block;
+      margin-left: auto;
+      .button(5px, #fff, @green-color, 1);
     }
   }
 

@@ -30,6 +30,7 @@ export default new Vuex.Store({
             session: '881pij7libmh3br91b27n5hk1eur28s7',
           },
           null,
+          'json',
           (res) => {
             context.commit('categoriesMutation', res.data.data.categories);
             context.commit('serCompanyName', res.data.data.user.company.short_name);
