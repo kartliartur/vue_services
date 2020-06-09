@@ -11,7 +11,7 @@
       </thead>
       <tr v-for="(item, idx) in this.data" :key="idx"
           @click="requestAction(item)">
-        <td v-for="(elem, i) in isFieldDisplayed(item)" :key="i"
+        <td v-for="(elem, i) in displayedArr" :key="i"
           :style="{ width: (100/getApp.table_labels.length) + '%' }">
           {{ item[elem] }}
         </td>
@@ -109,12 +109,12 @@ export default {
   }),
   methods: {
     requestAction(obj) {
-      if (Object.values(this.getApp.actions).some((item) => item === true)) {
+      if (this.getApp.actions.length > 0) {
         this.activeObj = obj;
-        if (this.getApp.actions.open_modal === true) {
+        if (this.getApp.actions[0] === 'open_modal') {
           window.console.log('asd');
           this.openModalFunc();
-        } else if (this.getApp.actions.download_file === true) {
+        } else if (this.getApp.actions[0] === 'download_file') {
           this.actsModalShow = true;
           this.actsModalSubtitle = obj.Name;
           this.actsDates.date_first = `${Funcs.dateToInputs(new Date())[2]}-${Funcs.dateToInputs(new Date())[3]}-${Funcs.dateToInputs(new Date())[0]}`;
@@ -148,11 +148,6 @@ export default {
         () => { window.console.log('ERROR'); },
       );
     },
-    isFieldDisplayed(obj) {
-      return Object.keys(obj)
-        .filter((item) => this.getApp.table_labels
-          .some((elem) => elem.name_1c === item));
-    },
     downloadFileReq() {
       Funcs.doRequest(
         'post',
@@ -165,8 +160,8 @@ export default {
           Date: `${Funcs.dateToInputs(new Date())[2]}-${Funcs.dateToInputs(new Date())[1]}-${Funcs.dateToInputs(new Date())[0]}`,
         },
         null,
-        (res) => {
-          window.console.log(res);
+        (blob) => {
+          Funcs.downloadFile(blob, 'Акт сверки.pdf', 'application/pdf');
         },
         () => { window.console.log('ERROR'); },
       );
@@ -175,6 +170,11 @@ export default {
   computed: {
     getApp() {
       return Funcs.filterByParams(this.$store.state.categories, this.category, this.app);
+    },
+    displayedArr() {
+      const arr = [];
+      this.getApp.table_labels.map((item) => arr.push(item.name_1c));
+      return arr;
     },
   },
 };

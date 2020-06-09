@@ -71,8 +71,13 @@ export default {
   getAppData(context, app) {
     if (app !== undefined) {
       const appObj = this.filterByParams(context.state.categories, app.category, app.name);
+      window.console.log(appObj);
       const { data } = app;
       data.INN = context.state.inn;
+      if (appObj.date_start !== undefined) {
+        data.DateFirst = appObj.date_start;
+        data.DateLast = appObj.date_end;
+      }
       this.doRequest(
         'post',
         context.state.base_url + appObj.path_get,
