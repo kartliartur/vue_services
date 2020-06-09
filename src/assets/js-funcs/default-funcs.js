@@ -75,8 +75,10 @@ export default {
       window.console.log(appObj);
       const { data } = app;
       data.INN = context.state.inn;
-      if (appObj.inputs.length > 0) {
+      if (appObj.inputs.filter((item) => item.label === 'date_start')[0] !== undefined) {
         data.DateFirst = appObj.inputs.filter((item) => item.label === 'date_start')[0].value;
+      }
+      if (appObj.inputs.filter((item) => item.label === 'date_end')[0]) {
         data.DateLast = appObj.inputs.filter((item) => item.label === 'date_end')[0].value;
       }
       this.doRequest(
