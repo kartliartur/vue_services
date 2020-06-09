@@ -24,7 +24,7 @@
         <h2>Надстройки</h2>
         <div class="frame-content">
           <div class="content-item" v-for="(item, idx) in getAppObject.inputs" :key="idx">
-            <span>asd</span>
+            <span>{{ item.display_name }}</span>
             <input :type="item.type" v-model="item.value" :name="item.label">
           </div>
           <button @click="login()">Применить</button>
