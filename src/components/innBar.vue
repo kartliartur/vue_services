@@ -128,6 +128,7 @@ export default {
   #app .inn-wrap {
     position: static;
     border: 1px solid #424242;
+    margin-left: 10px;
     & .active {
       display: none;
     }
@@ -138,6 +139,7 @@ export default {
   }
 
   #app .inn-wrap .inn-bar {
+    right: 0;
     left: unset;
     box-shadow: 2px 2px 14px 2px rgba(0,0,0,.5);
     &:after {

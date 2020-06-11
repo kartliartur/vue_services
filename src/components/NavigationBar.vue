@@ -3,7 +3,7 @@
     <img src="../assets/images/back.svg" @click="$router.go(-1)" width="25px" title="Назад"
       class="active">
     <img src="../assets/images/back2.svg" @click="$router.go(-1)" width="25px" title="Назад"
-      class="hidden">
+      class="hidden back">
     <InnBar @click.native="changeActiveMenu('inn', $event)"
       :modalShow="this.activeMenu === 'inn'"
       :currentInn="getInn"/>
@@ -192,8 +192,10 @@ export default {
 
 @media screen and (max-width: 850px) {
   .nav-bar {
+    right: 5px;
     & .nav-item {
       position: static;
+      margin-left: 10px;
       & .nav-item-list {
         position: fixed;
         justify-content: center;
@@ -228,5 +230,13 @@ export default {
     }
   }
 }
+
+// @media screen and (max-width: 410px) {
+//   .nav-bar {
+//     & .back {
+//       display: none;
+//     }
+//   }
+// }
 
 </style>
