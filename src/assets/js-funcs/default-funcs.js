@@ -30,10 +30,6 @@ export default {
     link.href = data;
     link.download = fileName;
     link.click();
-    setTimeout(() => {
-      window.URL.revokeObjectURL(data);
-      link.remove();
-    }, 100);
   },
   doRequest(type, url, data, params, rT, success, error) {
     const preloadScreen = document.getElementById('preload');
@@ -61,7 +57,7 @@ export default {
         } else { error(); }
         setTimeout(() => {
           preloadScreen.removeAttribute('style');
-        });
+        }, 1000);
       });
   },
   filterByParams(arr, category, name) {
@@ -72,7 +68,6 @@ export default {
   getAppData(context, app) {
     if (app !== undefined) {
       const appObj = this.filterByParams(context.state.categories, app.category, app.name);
-      window.console.log(appObj);
       const { data } = app;
       data.INN = context.state.inn;
       if (appObj.inputs.filter((item) => item.label === 'date_start')[0] !== undefined) {

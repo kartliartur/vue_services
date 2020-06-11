@@ -10,7 +10,8 @@
         </tr>
       </thead>
       <tr v-for="(item, idx) in this.data" :key="idx"
-          @click="requestAction(item)">
+          @click="requestAction(item)"
+          :class="{ title: isLayout(item, 'Bold'), padded: isLayout(item, 'Padding') }">
         <td v-for="(elem, i) in displayedArr" :key="i"
           :style="{ width: (100/getApp.table_labels.length) + '%' }">
           {{ item[elem] }}
@@ -48,17 +49,26 @@
         </div>
       </div>
     </div>
+    <MyNotification :text="notification_text" :textColor="notification_color"
+      :isShow="notification_show" @toggleNotif="notification_show=false"/>
   </div>
 </template>
 
 <script type="text/javascript">
 
 import Funcs from '@/assets/js-funcs/default-funcs';
+import MyNotification from '@/components/myNotification.vue';
 
 export default {
   name: 'myTable',
+  components: {
+    MyNotification,
+  },
   props: ['data', 'category', 'app'],
   data: () => ({
+    notification_text: '',
+    notification_color: '',
+    notification_show: false,
     modalShow: false,
     actsModalShow: false,
     actsModalSubtitle: '',
@@ -122,6 +132,12 @@ export default {
         }
       }
     },
+    isLayout(item, name) {
+      if (item.Layout !== undefined) {
+        return item.Layout[name];
+      }
+      return false;
+    },
     openModalFunc() {
       Funcs.doRequest(
         'post',
@@ -131,21 +147,29 @@ export default {
           GUID: this.activeObj.GUID,
         },
         null,
+        'json',
         (res) => {
-          const keys = Object.keys(res.data.data[0]);
-          this.modalSubtitle = this.activeObj.Document;
-          for (let i = 0; i < this.modal_content.length; i += 1) {
-            const item = this.modal_content[i];
-            keys.map((elem) => {
-              if (elem === item.variable) {
-                item.value = res.data.data[0][elem];
-              }
-              return true;
-            });
+          window.console.log(res.data);
+          if (res.data.error) {
+            this.showNotificaction(res.data.report, '#c23616');
+          } else {
+            const keys = Object.keys(res.data.data[0]);
+            this.modalSubtitle = this.activeObj.Document;
+            for (let i = 0; i < this.modal_content.length; i += 1) {
+              const item = this.modal_content[i];
+              keys.map((elem) => {
+                if (elem === item.variable) {
+                  item.value = res.data.data[0][elem];
+                }
+                return true;
+              });
+            }
+            this.modalShow = true;
           }
-          this.modalShow = true;
         },
-        () => { window.console.log('ERROR'); },
+        () => {
+          this.showNotificaction('Сервер временно недоступен, попробуйте позже', '#c23616');
+        },
       );
     },
     downloadFileReq() {
@@ -160,12 +184,19 @@ export default {
           Date: `${Funcs.dateToInputs(new Date())[2]}-${Funcs.dateToInputs(new Date())[1]}-${Funcs.dateToInputs(new Date())[0]}`,
         },
         null,
-        'json',
+        'blob',
         (blob) => {
-          Funcs.downloadFile(blob, 'Акт сверки.pdf', 'application/pdf');
+          Funcs.downloadFile(blob.data, 'Акт сверки.pdf', 'application/pdf');
         },
-        () => { window.console.log('ERROR'); },
+        () => {
+          this.showNotificaction('Сервер временно недоступен, попробуйте позже', '#c23616');
+        },
       );
+    },
+    showNotificaction(text, color) {
+      this.notification_text = text;
+      this.notification_color = color;
+      this.notification_show = true;
     },
   },
   computed: {
@@ -190,6 +221,7 @@ export default {
   height: auto;
   background: #fff;
   border-radius: 5px;
+  overflow-x: scroll;
   padding: 10px;
 
   & table {
@@ -207,12 +239,15 @@ export default {
       }
 
       & td, th {
-        padding: 10px;
+        padding: 2.5px 10px;
         font-size: .9em;
         text-align: center;
       }
       & th {
         font-weight: bold;
+      }
+      & td:first-child, th:first-child {
+        text-align: left;
       }
     }
     & tr:nth-child(2n) {
@@ -221,6 +256,16 @@ export default {
     & thead tr {
       border: none;
       cursor: unset;
+    }
+    & .title {
+      & td {
+        font-weight: 900;
+      }
+    }
+    & .padded {
+      & td:first-child {
+        padding-left: 40px;
+      }
     }
   }
 }
