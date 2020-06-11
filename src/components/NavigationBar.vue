@@ -7,10 +7,13 @@
     <InnBar @click.native="changeActiveMenu('inn', $event)"
       :modalShow="this.activeMenu === 'inn'"
       :currentInn="getInn"/>
-    <div class="nav-item services-wrap" @click="changeActiveMenu('services')">
-      <img src="../assets/images/main-menu.png" width="25px" class="menu-icon active">
-      <img src="../assets/images/menu-black.png" width="25px" class="menu-icon hidden">
+    <div class="nav-item services-wrap">
+      <img src="../assets/images/main-menu.png" width="25px" class="menu-icon active"
+        @click="changeActiveMenu('services')">
+      <img src="../assets/images/menu-black.png" width="25px" class="menu-icon hidden"
+        @click="changeActiveMenu('services')">
       <div class="nav-item-list" v-show="this.activeMenu === 'services'">
+          <span class="close" @click="changeActiveMenu('services')">×</span>
           <div class="nav-item-list-item">
               <img src="../assets/images/kartli-icon.png" class="gray-image">
               <a href="https://kartli.ch/ru/" target="_blank">Сайт компании</a>
@@ -33,10 +36,13 @@
           </div>
       </div>
     </div>
-    <div class="nav-item profile-wrap" @click="changeActiveMenu('profile')" v-if="!isAuth">
-      <img src="../assets/images/main-man.png" width="25px" class="menu-icon active">
-      <img src="../assets/images/man.png" width="25px" class="menu-icon hidden">
+    <div class="nav-item profile-wrap" v-if="!isAuth">
+      <img src="../assets/images/main-man.png" width="25px" class="menu-icon active"
+        @click="changeActiveMenu('profile')">
+      <img src="../assets/images/man.png" width="25px" class="menu-icon hidden"
+        @click="changeActiveMenu('profile')">
       <div class="nav-item-list profile-list" v-show="this.activeMenu === 'profile'">
+          <span class="close" @click="changeActiveMenu('profile')">×</span>
           <div class="nav-item-list-item name-row">
               <span>{{ getUserName }}</span>
           </div>
@@ -72,6 +78,7 @@ export default {
       } else {
         this.activeMenu = name === this.activeMenu ? null : name;
       }
+      window.console.log(this.activeMenu);
     },
   },
   computed: {
@@ -134,6 +141,10 @@ export default {
         transform: rotate(45deg);
       }
 
+      & .close {
+        display: none;
+      }
+
       &-item {
         .flex(row, flex-start, center);
         width: 100%;
@@ -181,6 +192,33 @@ export default {
 
 @media screen and (max-width: 850px) {
   .nav-bar {
+    & .nav-item {
+      position: static;
+      & .nav-item-list {
+        position: fixed;
+        justify-content: center;
+        width: 100%;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 100;
+
+        &:after {
+          display: none;
+        }
+
+        & .close {
+          display: flex;
+          position: absolute;
+          top: 25px;
+          right: 25px;
+          font-size: 2em;
+          cursor: pointer;
+          color: #424242;
+          font-weight: 300;
+        }
+      }
+    }
     & .active {
       display: none;
     }

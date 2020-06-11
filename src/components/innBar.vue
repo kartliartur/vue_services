@@ -102,6 +102,7 @@ export default {
     font-size: 1.4em;
     text-align: center;
     padding: 10px 0;
+    font-weight: 300;
   }
 
   & input {
@@ -125,6 +126,7 @@ export default {
 
 @media screen and (max-width: 850px) {
   #app .inn-wrap {
+    position: static;
     border: 1px solid #424242;
     & .active {
       display: none;
@@ -132,6 +134,14 @@ export default {
 
     & .hidden {
       display: initial;
+    }
+  }
+
+  #app .inn-wrap .inn-bar {
+    left: unset;
+    box-shadow: 2px 2px 14px 2px rgba(0,0,0,.5);
+    &:after {
+      display: none;
     }
   }
 }
