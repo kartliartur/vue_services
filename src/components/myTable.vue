@@ -149,7 +149,6 @@ export default {
         null,
         'json',
         (res) => {
-          window.console.log(res.data);
           if (res.data.error) {
             this.showNotificaction(res.data.report, '#c23616');
           } else {

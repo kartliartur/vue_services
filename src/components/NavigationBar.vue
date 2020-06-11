@@ -1,6 +1,9 @@
 <template>
   <div class="nav-bar">
-    <img src="../assets/images/back.svg" @click="$router.go(-1)" width="25px" title="Назад">
+    <img src="../assets/images/back.svg" @click="$router.go(-1)" width="25px" title="Назад"
+      class="active">
+    <img src="../assets/images/back2.svg" @click="$router.go(-1)" width="25px" title="Назад"
+      class="hidden">
     <InnBar @click.native="changeActiveMenu('inn', $event)"
       :modalShow="this.activeMenu === 'inn'"
       :currentInn="getInn"/>

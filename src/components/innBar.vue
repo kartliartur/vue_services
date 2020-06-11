@@ -1,6 +1,7 @@
 <template>
   <div class="inn-wrap" v-show="isAdmin">
-    <img src="../assets/images/settings.svg" width="15px" title="Админ панель">
+    <img src="../assets/images/settings.svg" width="15px" title="Админ панель" class="active">
+    <img src="../assets/images/settings2.svg" width="15px" title="Админ панель" class="hidden">
     <div class="inn-bar" v-show="modalShow">
       <h2>Панель администратора</h2>
       <input type="text" placeholder="Введите инн компании"
@@ -58,6 +59,14 @@ export default {
   border-radius: 100px;
   padding: 2.5px;
   cursor: pointer;
+
+  & .active {
+    display: initial;
+  }
+
+  & .hidden {
+    display: none;
+  }
 }
 
 #app .inn-wrap .inn-bar {
@@ -111,6 +120,19 @@ export default {
 
   & button {
     .button(5px, @green-color, #fff, 1);
+  }
+}
+
+@media screen and (max-width: 850px) {
+  #app .inn-wrap {
+    border: 1px solid #424242;
+    & .active {
+      display: none;
+    }
+
+    & .hidden {
+      display: initial;
+    }
   }
 }
 
