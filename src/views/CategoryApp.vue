@@ -28,6 +28,7 @@
             <input :type="item.type" v-model="item.value" :name="item.label">
           </div>
           <button @click="login()">Применить</button>
+          <button @click="downloadReq()">Сохранить данные в excel</button>
         </div>
       </div>
     </div>
@@ -59,6 +60,26 @@ export default {
         data: {},
       });
       this.showModal = this.showModal === true ? false : this.showModal;
+    },
+    downloadReq() {
+      Funcs.doRequest(
+        'post',
+        this.$store.state.base_url + this.getAppObject.path_download_excel,
+        null,
+        null,
+        'blob',
+        (res) => {
+          Funcs.downloadFile(res.data, `${this.getAppObject.name}.xlsx`, 'arraybuffer')
+            .then((resolve) => {
+              if (!resolve) {
+                this.showNotificaction('Данные за указанный период, не найдены', '#c23616');
+              }
+            });
+        },
+        () => {
+          this.showNotificaction('Сервер временно недоступен, попробуйте позже', '#c23616');
+        },
+      );
     },
   },
   computed: {

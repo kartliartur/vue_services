@@ -43,7 +43,7 @@
         <span class="subtitle">{{ actsModalSubtitle }}</span>
         <div class="frame-content">
           <div class="content-item" v-for="(value, key) in actsDates" :key="key">
-            <input type="date" :value="value" :name="key">
+            <input type="date" v-model="actsDates[key]" :name="key">
           </div>
           <button @click="downloadFileReq()">Загрузить</button>
         </div>
@@ -184,8 +184,13 @@ export default {
         },
         null,
         'blob',
-        (blob) => {
-          Funcs.downloadFile(blob.data, 'Акт сверки.pdf', 'application/pdf');
+        (res) => {
+          Funcs.downloadFile(res.data, 'Акт сверки.pdf', 'application/pdf')
+            .then((resolve) => {
+              if (!resolve) {
+                this.showNotificaction('Данные за указанный период, не найдены', '#c23616');
+              }
+            });
         },
         () => {
           this.showNotificaction('Сервер временно недоступен, попробуйте позже', '#c23616');

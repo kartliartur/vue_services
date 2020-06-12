@@ -14,22 +14,44 @@ export default {
     if (day < 10) day = `0${day}`;
     return [day, month, year, monthBefore];
   },
-  downloadFile(blob, fileName, contentType) {
+  async downloadFile(blob, fileName, contentType) {
     // if (content_type != 'aplication/pdf') {
     //   var newBlob = new Blob([s2ab(btoa(blob))], {type: content_type});
     // } else {
     //   var newBlob = new Blob([blob], {type: content_type});
     // }
     const newBlob = new Blob([blob], { type: contentType });
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveOrOpenBlob(newBlob);
-      return;
-    }
-    const data = window.URL.createObjectURL(newBlob);
-    const link = document.createElement('a');
-    link.href = data;
-    link.download = fileName;
-    link.click();
+    const reader = new FileReader();
+    const promise = new Promise((resolve) => {
+      let text = '';
+      let result = true;
+      let flag = false;
+      reader.addEventListener('loadend', (e) => {
+        text = e.srcElement.result;
+        window.console.log(text);
+        flag = text.includes('{"error": true, "report":');
+        if (flag) {
+          result = false;
+        } else {
+          if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+            window.navigator.msSaveOrOpenBlob(newBlob);
+            return true;
+          }
+          const data = window.URL.createObjectURL(newBlob);
+          const link = document.createElement('a');
+          link.href = data;
+          link.download = fileName;
+          link.click();
+        }
+        resolve(result);
+        return true;
+      });
+    });
+
+    reader.readAsText(newBlob);
+    const res = await promise;
+
+    return res;
   },
   doRequest(type, url, data, params, rT, success, error) {
     const preloadScreen = document.getElementById('preload');
