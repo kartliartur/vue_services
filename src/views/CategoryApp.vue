@@ -62,10 +62,18 @@ export default {
       this.showModal = this.showModal === true ? false : this.showModal;
     },
     downloadReq() {
+      const data = {};
+      if (this.getAppObject.inputs.filter((item) => item.label === 'date_start')[0] !== undefined) {
+        data.DateFirst = this.getAppObject.inputs.filter((item) => item.label === 'date_start')[0].value;
+      }
+      if (this.getAppObject.inputs.filter((item) => item.label === 'date_end')[0]) {
+        data.DateLast = this.getAppObject.inputs.filter((item) => item.label === 'date_end')[0].value;
+      }
+      data.INN = this.$store.state.inn;
       Funcs.doRequest(
         'post',
         this.$store.state.base_url + this.getAppObject.path_download_excel,
-        null,
+        data || null,
         null,
         'blob',
         (res) => {
