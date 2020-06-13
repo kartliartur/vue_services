@@ -223,10 +223,8 @@ export default {
 .table-wrap {
   width: 100%;
   height: auto;
-  background: #fff;
   border-radius: 5px;
   overflow-x: scroll;
-  padding: 10px;
 
   & table {
     width: 100%;

@@ -3,9 +3,15 @@
     <div class="category-app-title">
       <img :src="getPath(getAppObject.link.substr(1))" width="36px">
       <h1>{{ getAppObject.name }}</h1>
-      <button @click="showModal = true">Надстройки</button>
     </div>
     <div class="category-app-content">
+      <div class="actions-bar">
+        <div class="content-item" v-for="(item, idx) in getAppObject.inputs" :key="idx">
+          <input :type="item.type" v-model="item.value" :name="item.label">
+        </div>
+        <button @click="login()" v-show="getAppObject.inputs.length > 0">Сформировать</button>
+        <button @click="downloadReq()">Загрузить</button>
+      </div>
       <h2 v-if="this.$store.state.activeAppData.report.length !== 0">
         {{ this.$store.state.activeAppData.report }}
       </h2>
@@ -16,21 +22,6 @@
         :data="this.$store.state.activeAppData.data"
         :category="this.getCategoryName"
         :app="this.getAppName"/>
-    </div>
-    <div :class="{ 'modal-wrap': true, 'active-modal-wrap': showModal }">
-      <div class="hover"></div>
-      <div class="modal-frame">
-        <span @click="showModal=false" class="close">×</span>
-        <h2>Надстройки</h2>
-        <div class="frame-content">
-          <div class="content-item" v-for="(item, idx) in getAppObject.inputs" :key="idx">
-            <span>{{ item.display_name }}</span>
-            <input :type="item.type" v-model="item.value" :name="item.label">
-          </div>
-          <button @click="login()">Применить</button>
-          <button @click="downloadReq()">Сохранить данные в excel</button>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -148,7 +139,52 @@ export default {
   & &-content {
     width: 100%;
     height: 100%;
+    background: #fff;
+    border-radius: 5px;
+    padding: 10px;
     margin: 10px 0;
+
+    & .actions-bar {
+      .flex(row, flex-start, center);
+      flex-wrap: wrap;
+      width: 100%;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+
+      & input {
+        .input();
+        margin: 10px 10px 10px 0;
+      }
+
+      & button {
+        .button(5px, @green-color, #fff, 1);
+        margin: 10px 10px 10px 0;
+      }
+
+      & button:last-child {
+        display: block;
+        margin-left: auto;
+        margin-right: 0px;
+      }
+    }
+
+    & h2 {
+      color: @black-color;
+      padding: 10px;
+      font-size: 1.75em;
+    }
+  }
+}
+
+@media screen and (max-width: 461px) {
+  .category-app {
+    & .category-app-content {
+      & .actions-bar {
+        button:last-child {
+          margin-left: 0;
+        }
+      }
+    }
   }
 }
 
