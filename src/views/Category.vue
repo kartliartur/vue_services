@@ -1,7 +1,7 @@
 <template>
   <div class="home category">
     <div class="category-title">
-      <img :src="getPath(getCategoryArray[0].img)" width="36px">
+      <img :src="getPath(getCategoryArray[0])" width="36px">
       <h1>{{ getCategoryArray[0].name }}</h1>
     </div>
     <div class="home-item" v-for="(item, i) in getCategoryArray[0].links"
@@ -23,9 +23,11 @@
 export default {
   name: 'Category',
   methods: {
-    getPath: (img) => {
-      const images = require.context('../assets/images/', false, /\.svg$/);
-      return images(`./${img}.svg`);
+    getPath(item) {
+      if (item !== undefined) {
+        return this.$store.state.host_url + item.icon_path;
+      }
+      return '';
     },
     goTo(link) {
       this.$router.push({
@@ -38,7 +40,7 @@ export default {
     getCategoryArray() {
       window.console.log(this.$store.state.categories);
       return this.$store.state.categories
-        .filter((item) => item.img === this.getCategoryName);
+        .filter((item) => item.link.substr(1) === this.getCategoryName);
     },
   },
   mounted() {

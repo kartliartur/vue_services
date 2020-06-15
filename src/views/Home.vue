@@ -7,7 +7,7 @@
       <div class="home-item-content">
         <h2 class="home-item-content-title">{{ item.name }}</h2>
         <span>
-          {{ item.links.reduce((acc, cur) => acc + cur.name + ' ', '') }}
+          {{ item.description }}
         </span>
       </div>
     </div>
@@ -20,9 +20,11 @@
 export default {
   name: 'Home',
   methods: {
-    getPath: (item) => {
-      const images = require.context('../assets/images/', false, /\.svg$/);
-      return images(`./${item.img}.svg`);
+    getPath(item) {
+      if (item !== undefined) {
+        return this.$store.state.host_url + item.icon_path;
+      }
+      return '';
     },
     goTo(link) {
       this.$router.push({ path: link });
