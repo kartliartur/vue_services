@@ -7,7 +7,7 @@
     <div class="home-item" v-for="(item, i) in getCategoryArray[0].links"
                                :key="i"
                                @click="goTo(`/${getCategoryName}${item.link}`)">
-      <img :src="getPath(item.link.substr(1))" width="40px">
+      <img :src="getPath(item)" width="40px">
       <div class="home-item-content">
         <h2 class="home-item-content-title">{{ item.name }}</h2>
         <span v-show="item.description != undefined && item.description.length > 0">
@@ -38,7 +38,6 @@ export default {
   computed: {
     getCategoryName: () => window.location.pathname.substr(1),
     getCategoryArray() {
-      window.console.log(this.$store.state.categories);
       return this.$store.state.categories
         .filter((item) => item.link.substr(1) === this.getCategoryName);
     },

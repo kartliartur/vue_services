@@ -33,6 +33,7 @@ export default new Vuex.Store({
           null,
           'json',
           (res) => {
+            window.console.log(res.data);
             context.commit('categoriesMutation', res.data.data.categories);
             context.commit('serCompanyName', res.data.data.user.company.short_name);
             context.commit('setUser', res.data.data.user);

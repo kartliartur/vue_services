@@ -1,7 +1,7 @@
 <template>
   <div class="category-app">
     <div class="category-app-title">
-      <img :src="getPath(getAppObject.link.substr(1))" width="36px">
+      <img :src="getPath(getAppObject)" width="36px">
       <h1>{{ getAppObject.name }}</h1>
     </div>
     <div class="category-app-content">
@@ -40,9 +40,11 @@ export default {
     showModal: false,
   }),
   methods: {
-    getPath: (img) => {
-      const images = require.context('../assets/images/', false, /\.svg$/);
-      return images(`./${img}.svg`);
+    getPath(item) {
+      if (item !== undefined) {
+        return this.$store.state.host_url + item.icon_path;
+      }
+      return '';
     },
     login() {
       this.$store.dispatch('login', {

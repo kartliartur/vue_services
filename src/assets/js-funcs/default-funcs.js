@@ -89,6 +89,7 @@ export default {
   },
   getAppData(context, app) {
     if (app !== undefined) {
+      window.console.log(app);
       const appObj = this.filterByParams(context.state.categories, app.category, app.name);
       const { data } = app;
       data.INN = context.state.inn;
