@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'modal-wrap': true, 'active-modal-wrap': isShow }">
+  <div :class="{ 'modal-wrap': true, 'active-modal-wrap': isShow }" id="notif">
     <div class="hover"></div>
     <div class="modal-frame notif-frame">
         <div class="frame-content">
@@ -46,6 +46,10 @@ div.active-modal-wrap {
       }
     }
   }
+}
+
+div#notif {
+  z-index: 1000000000;
 }
 
 </style>

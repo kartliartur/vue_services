@@ -3,10 +3,7 @@
     <!-- START PRELOAD SCREEN -->
     <div class="preload-wrap" id="preload">
       <img src="../src/assets/images/preload.png" width="100px" alt="">
-      <svg class="spinner" viewBox="25 25 50 50">
-        <circle class="path" cx="50" cy="50" r="20"
-                fill="none" stroke-width="1" stroke-miterlimit="10"></circle>
-      </svg>
+      <spinner :width="1"/>
     </div>
     <!-- END PRELOAD SCREEN -->
 
@@ -61,11 +58,13 @@
 <script type="text/javascript">
 
 import NavigationBar from '@/components/NavigationBar.vue';
+import spinner from '@/components/spinner.vue';
 
 export default {
   name: 'App',
   components: {
     NavigationBar,
+    spinner,
   },
 };
 
@@ -74,23 +73,6 @@ export default {
 <style scoped lang="less">
 
 @import url('assets/less-templates/base.less');
-@keyframes rotate {
-  100% {
-    transform: rotate(360deg);
-  }
-}
-@keyframes dash {
-  0% {
-    stroke-dasharray: 1, 200;
-    stroke-dashoffset: 0;
-  } 50% {
-    stroke-dasharray: 89, 200;
-    stroke-dashoffset: -35px;
-  } 100% {
-    stroke-dasharray: 89, 200;
-    stroke-dashoffset: -124px;
-  }
-}
 
 #app {
   .flex(row, flex-start, flex-start);
@@ -183,27 +165,6 @@ export default {
   height: 100vh;
   background: @green-color;
   z-index: 10000000;
-
-  & .spinner {
-    height: 200px;
-    width: 200px;
-    animation: rotate 2s linear infinite;
-    transform-origin: center center;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-
-    & .path {
-      stroke-dasharray: 1, 200;
-      stroke-dashoffset: 0;
-      animation: dash 1.5s ease-in-out infinite;
-      stroke-linecap: round;
-      stroke: #fff;
-    }
-  }
 }
 
 @media screen and (max-width: 850px) {

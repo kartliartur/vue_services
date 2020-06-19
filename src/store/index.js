@@ -23,6 +23,7 @@ export default new Vuex.Store({
   },
   actions: {
     login: (context, app) => {
+      window.console.log(context.state.user);
       if (context.state.user === null) {
         Funcs.doRequest(
           'post',

@@ -9,13 +9,19 @@
         <div class="content-item" v-for="(item, idx) in getAppObject.inputs" :key="idx">
           <input :type="item.type" v-model="item.value" :name="item.label">
         </div>
-        <button @click="login(true)" v-show="getAppObject.inputs.length > 0">Сформировать</button>
+        <button @click="login(true)" v-show="checkInputs">Сформировать</button>
+        <div class="placeholder-updater">
+          <button v-show="checkPlaceholder" @click="updatePlaceholder()">
+            Определить текущее местоположение
+          </button>
+          <spinner :width="3" v-show="spinnerShow"/>
+        </div>
         <button @click="downloadReq()">Загрузить</button>
       </div>
-      <h2 v-if="this.$store.state.activeAppData.report.length !== 0">
+      <h2 v-if="checkAppReport">
         {{ this.$store.state.activeAppData.report }}
       </h2>
-      <h2 v-else-if="this.$store.state.activeAppData.data.length === 0">
+      <h2 v-else-if="checkAppData">
         Список пуст
       </h2>
       <myTable v-else
@@ -32,6 +38,7 @@
 
 import Funcs from '@/assets/js-funcs/default-funcs';
 import myTable from '@/components/myTable.vue';
+import spinner from '@/components/spinner.vue';
 import MyNotification from '@/components/myNotification.vue';
 
 export default {
@@ -39,14 +46,42 @@ export default {
   components: {
     myTable,
     MyNotification,
+    spinner,
   },
   data: () => ({
     showModal: false,
     notification_text: '',
     notification_color: '',
     notification_show: false,
+    spinnerShow: false,
   }),
   methods: {
+    updatePlaceholder() {
+      Funcs.doRequest(
+        'post',
+        this.$store.state.base_url + this.getAppObject.path_post,
+        {
+          INN: this.$store.state.inn,
+        },
+        null,
+        'json',
+        (res) => {
+          if (!res.data.data.error) {
+            this.showNotificaction(res.data.data.data, 'green');
+            this.spinnerShow = true;
+            setTimeout(() => {
+              this.spinnerShow = false;
+              window.location.reload();
+            }, 60000);
+          } else {
+            this.showNotificaction(res.data.data.report, 'green');
+          }
+        },
+        () => {
+          this.showNotificaction('Сервер временно недоступен, попробуйте позже', '#c23616');
+        },
+      );
+    },
     getPath(item) {
       if (item !== undefined) {
         return this.$store.state.host_url + item.icon_path;
@@ -64,7 +99,6 @@ export default {
           category: this.getCategoryName,
           data: {},
         });
-        this.showModal = this.showModal === true ? false : this.showModal;
       }
     },
     inputsValidate() {
@@ -125,6 +159,38 @@ export default {
           .filterByParams(this.$store.state.categories, this.getCategoryName, this.getAppName);
       }
       return '';
+    },
+    checkAppData() {
+      if (this.$store.state.activeAppData.data !== undefined) {
+        if (this.$store.state.activeAppData.data.length === 0) {
+          return true;
+        }
+      }
+      return false;
+    },
+    checkAppReport() {
+      if (this.$store.state.activeAppData.report !== undefined) {
+        if (this.$store.state.activeAppData.report.length !== 0) {
+          return true;
+        }
+      }
+      return false;
+    },
+    checkInputs() {
+      if (this.getAppObject.inputs !== undefined) {
+        if (this.getAppObject.inputs.length > 0) {
+          return true;
+        }
+      }
+      return false;
+    },
+    checkPlaceholder() {
+      if (this.getAppObject.link !== undefined) {
+        if (this.getAppObject.link === '/aboutcars') {
+          return true;
+        }
+      }
+      return false;
     },
   },
   mounted() {
@@ -197,6 +263,20 @@ export default {
         display: block;
         margin-left: auto;
         margin-right: 0px;
+      }
+
+      & .placeholder-updater {
+        .flex(row, flex-start, center);
+
+        & .spinner {
+          position: static;
+          height: 30px;
+          width: 30px;
+
+          & .path {
+            stroke: @green-color;
+          }
+        }
       }
     }
 

@@ -22,7 +22,7 @@
       <div class="hover"></div>
       <div class="modal-frame">
         <span @click="modalShow=false" class="close">×</span>
-        <h2>Документ</h2>
+        <h2>{{ modalTitle }}</h2>
         <span class="subtitle">{{ modalSubtitle }}</span>
         <div class="frame-content">
           <div class="content-item" v-for="(item, idx) in modal_content" :key="idx">
@@ -30,7 +30,9 @@
             <select v-if="item.type === 'select'">
               <option :value="item.value">{{ item.value }}</option>
             </select>
-            <span v-else-if="item.type === 'input'" class="like-input">{{ item.value }}</span>
+            <span v-else-if="item.type === 'text'" class="like-input">{{ item.value }}</span>
+            <input v-else-if="item.type === 'input'" :type="item.type" :value="item.value">
+            <input v-else-if="item.type === 'submit'" :type="item.type" :value="item.value">
           </div>
         </div>
       </div>
@@ -73,12 +75,40 @@ export default {
     actsModalShow: false,
     actsModalSubtitle: '',
     modalSubtitle: '',
+    modalTitle: '',
     activeObj: {},
     actsDates: {
       date_first: '',
       date_last: '',
     },
-    modal_content: [
+    modal_content: [],
+    orders_content: [
+      {
+        name: 'Марка:',
+        variable: 'Product_Name',
+        type: 'select',
+        value: '',
+      },
+      {
+        name: 'Количество',
+        variable: 'Count',
+        type: 'text',
+        value: '',
+      },
+      {
+        name: 'Комментарий:',
+        variable: 'Comment',
+        type: 'input',
+        value: '',
+      },
+      {
+        name: '',
+        variable: null,
+        type: 'submit',
+        value: 'Отправить заявку',
+      },
+    ],
+    payments_content: [
       {
         name: 'Номенклатура:',
         variable: 'Рroduct',
@@ -88,42 +118,43 @@ export default {
       {
         name: 'Количество:',
         variable: 'Count',
-        type: 'input',
+        type: 'text',
         value: '',
       },
       {
         name: 'Цена:',
         variable: 'Price',
-        type: 'input',
+        type: 'text',
         value: '',
       },
       {
         name: 'Сумма:',
         variable: 'Amount',
-        type: 'input',
+        type: 'text',
         value: '',
       },
       {
         name: 'НДС:',
         variable: 'VAT',
-        type: 'input',
+        type: 'text',
         value: '',
       },
       {
         name: 'Сумма НДС:',
         variable: 'AmountVAT',
-        type: 'input',
+        type: 'text',
         value: '',
       },
     ],
   }),
   methods: {
     requestAction(obj) {
+      window.console.log(obj);
       if (this.getApp.actions.length > 0) {
         this.activeObj = obj;
         if (this.getApp.actions[0] === 'open_modal') {
           window.console.log('asd');
-          this.openModalFunc();
+          this.openModalFunc(obj);
         } else if (this.getApp.actions[0] === 'download_file') {
           this.actsModalShow = true;
           this.actsModalSubtitle = obj.Name;
@@ -139,40 +170,57 @@ export default {
       return false;
     },
     openModalFunc() {
-      Funcs.doRequest(
-        'post',
-        this.$store.state.base_url + this.getApp.path_post,
-        {
-          INN: this.$store.state.inn,
-          GUID: this.activeObj.GUID,
-        },
-        null,
-        'json',
-        (res) => {
-          if (res.data.error) {
-            this.showNotificaction(res.data.report, '#c23616');
-          } else {
-            const keys = Object.keys(res.data.data[0]);
-            this.modalSubtitle = this.activeObj.Document;
-            for (let i = 0; i < this.modal_content.length; i += 1) {
-              const item = this.modal_content[i];
-              keys.map((elem) => {
-                if (elem === item.variable) {
-                  item.value = res.data.data[0][elem];
-                }
-                return true;
-              });
+      if (this.getApp.link === '/purchases') {
+        const keys = Object.keys(this.activeObj.Products[0]);
+        this.modalSubtitle = this.activeObj.Document_Name;
+        this.modalTitle = 'Повторить поставку';
+        this.modal_content = this.orders_content;
+        for (let i = 0; i < this.modal_content.length; i += 1) {
+          const item = this.modal_content[i];
+          keys.map((elem) => {
+            window.console.log(`${elem} ${item.variable}`);
+            if (elem === item.variable) {
+              item.value = this.activeObj.Products[0][elem];
             }
-            this.modalShow = true;
-          }
-        },
-        () => {
-          this.showNotificaction('Сервер временно недоступен, попробуйте позже', '#c23616');
-        },
-      );
+            return true;
+          });
+        }
+        this.modalShow = true;
+      }
+      // Funcs.doRequest(
+      //   'post',
+      //   this.$store.state.base_url + this.getApp.path_post,
+      //   {
+      //     INN: this.$store.state.inn,
+      //     GUID: this.activeObj.GUID,
+      //     Order_GUID: this.activeObj.Document_GUID,
+      //   },
+      //   null,
+      //   'json',
+      //   (res) => {
+      //     if (res.data.error) {
+      //       this.showNotificaction(res.data.report, '#c23616');
+      //     } else {
+      //       const keys = Object.keys(res.data.data[0]);
+      //       this.modalSubtitle = this.activeObj.Document;
+      //       for (let i = 0; i < this.payments_content.length; i += 1) {
+      //         const item = this.payments_content[i];
+      //         keys.map((elem) => {
+      //           if (elem === item.variable) {
+      //             item.value = res.data.data[0][elem];
+      //           }
+      //           return true;
+      //         });
+      //       }
+      //       this.modalShow = true;
+      //     }
+      //   },
+      //   () => {
+      //     this.showNotificaction('Сервер временно недоступен, попробуйте позже', '#c23616');
+      //   },
+      // );
     },
     downloadFileReq() {
-      window.console.log(new Date(this.actsDates.date_first) > new Date(this.actsDates.date_last));
       if (new Date(this.actsDates.date_first) > new Date(this.actsDates.date_last)) {
         this.showNotificaction('Дата начала должна быть раньше, чем дата конца', '#c23616');
       } else {
@@ -182,6 +230,7 @@ export default {
           {
             INN: this.$store.state.inn,
             Contract_GUID: this.activeObj.GUID,
+            Order_GUID: this.activeObj.GUID,
             DateFirst: this.actsDates.date_first,
             DateLast: this.actsDates.date_last,
             Date: `${Funcs.dateToInputs(new Date())[2]}-${Funcs.dateToInputs(new Date())[1]}-${Funcs.dateToInputs(new Date())[0]}`,

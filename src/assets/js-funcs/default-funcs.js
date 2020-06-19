@@ -83,14 +83,15 @@ export default {
       });
   },
   filterByParams(arr, category, name) {
-    window.console.log(arr);
-    return arr
-      .filter((item) => item.link.substr(1) === category)[0].links
-      .filter((item) => item.link === name)[0];
+    if (arr.length > 0) {
+      return arr
+        .filter((item) => item.link.substr(1) === category)[0].links
+        .filter((item) => item.link === name)[0];
+    }
+    return false;
   },
   getAppData(context, app) {
     if (app !== undefined) {
-      window.console.log(app);
       const appObj = this.filterByParams(context.state.categories, app.category, app.name);
       const { data } = app;
       data.INN = context.state.inn;
@@ -107,7 +108,13 @@ export default {
         null,
         'json',
         (res) => {
-          context.commit('setActiveAppDate', res.data);
+          if (res.data.data.data !== undefined) {
+            window.console.log(res.data.data);
+            context.commit('setActiveAppDate', res.data.data);
+          } else {
+            context.commit('setActiveAppDate', res.data);
+          }
+          window.console.log(context.state);
         },
         () => {
           window.console.log('ERRROR');
