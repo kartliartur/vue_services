@@ -128,9 +128,6 @@ export default {
       letter-spacing: 1.5px;
       font-weight: 300;
     }
-    & img {
-      filter: invert(1);
-    }
     & button {
       display: block;
       margin-left: auto;

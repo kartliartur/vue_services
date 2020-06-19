@@ -83,8 +83,9 @@ export default {
       });
   },
   filterByParams(arr, category, name) {
+    window.console.log(arr);
     return arr
-      .filter((item) => item.img === category)[0].links
+      .filter((item) => item.link.substr(1) === category)[0].links
       .filter((item) => item.link === name)[0];
   },
   getAppData(context, app) {
