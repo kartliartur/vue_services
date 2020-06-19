@@ -9,7 +9,7 @@
         <div class="content-item" v-for="(item, idx) in getAppObject.inputs" :key="idx">
           <input :type="item.type" v-model="item.value" :name="item.label">
         </div>
-        <button @click="login()" v-show="getAppObject.inputs.length > 0">Сформировать</button>
+        <button @click="login(true)" v-show="getAppObject.inputs.length > 0">Сформировать</button>
         <button @click="downloadReq()">Загрузить</button>
       </div>
       <h2 v-if="this.$store.state.activeAppData.report.length !== 0">
@@ -23,6 +23,8 @@
         :category="this.getCategoryName"
         :app="this.getAppName"/>
     </div>
+    <MyNotification :text="notification_text" :textColor="notification_color"
+      :isShow="notification_show" @toggleNotif="notification_show=false"/>
   </div>
 </template>
 
@@ -30,14 +32,19 @@
 
 import Funcs from '@/assets/js-funcs/default-funcs';
 import myTable from '@/components/myTable.vue';
+import MyNotification from '@/components/myNotification.vue';
 
 export default {
   name: 'CategoryApp',
   components: {
     myTable,
+    MyNotification,
   },
   data: () => ({
     showModal: false,
+    notification_text: '',
+    notification_color: '',
+    notification_show: false,
   }),
   methods: {
     getPath(item) {
@@ -46,13 +53,29 @@ export default {
       }
       return '';
     },
-    login() {
-      this.$store.dispatch('login', {
-        name: this.getAppName,
-        category: this.getCategoryName,
-        data: {},
-      });
-      this.showModal = this.showModal === true ? false : this.showModal;
+    login(flag) {
+      let isValid = true;
+      if (flag) {
+        isValid = this.inputsValidate();
+      }
+      if (isValid) {
+        this.$store.dispatch('login', {
+          name: this.getAppName,
+          category: this.getCategoryName,
+          data: {},
+        });
+        this.showModal = this.showModal === true ? false : this.showModal;
+      }
+    },
+    inputsValidate() {
+      const { inputs } = this.getAppObject;
+      if (inputs.length > 1) {
+        if (new Date(inputs[0].value) > new Date(inputs[1].value)) {
+          this.showNotificaction('Дата начала должна быть раньше, чем дата конца', '#c23616');
+          return false;
+        }
+      }
+      return true;
     },
     downloadReq() {
       const data = {};
@@ -82,6 +105,11 @@ export default {
         },
       );
     },
+    showNotificaction(text, color) {
+      this.notification_text = text;
+      this.notification_color = color;
+      this.notification_show = true;
+    },
   },
   computed: {
     getCategoryName: () => window.location.pathname.substr(1, window.location.pathname.indexOf('/', 2) - 1),
@@ -95,7 +123,7 @@ export default {
     },
   },
   mounted() {
-    this.login();
+    this.login(false);
   },
 };
 
@@ -170,7 +198,7 @@ export default {
     & h2 {
       color: @black-color;
       padding: 10px;
-      font-size: 1.75em;
+      font-size: 1.3em;
     }
   }
 }

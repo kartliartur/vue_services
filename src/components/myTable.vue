@@ -172,30 +172,35 @@ export default {
       );
     },
     downloadFileReq() {
-      Funcs.doRequest(
-        'post',
-        this.$store.state.base_url + this.getApp.path_post,
-        {
-          INN: this.$store.state.inn,
-          Contract_GUID: this.activeObj.GUID,
-          DateFirst: this.actsDates.date_first,
-          DateLast: this.actsDates.date_last,
-          Date: `${Funcs.dateToInputs(new Date())[2]}-${Funcs.dateToInputs(new Date())[1]}-${Funcs.dateToInputs(new Date())[0]}`,
-        },
-        null,
-        'blob',
-        (res) => {
-          Funcs.downloadFile(res.data, 'Акт сверки.pdf', 'application/pdf')
-            .then((resolve) => {
-              if (!resolve) {
-                this.showNotificaction('Данные за указанный период, не найдены', '#c23616');
-              }
-            });
-        },
-        () => {
-          this.showNotificaction('Сервер временно недоступен, попробуйте позже', '#c23616');
-        },
-      );
+      window.console.log(new Date(this.actsDates.date_first) > new Date(this.actsDates.date_last));
+      if (new Date(this.actsDates.date_first) > new Date(this.actsDates.date_last)) {
+        this.showNotificaction('Дата начала должна быть раньше, чем дата конца', '#c23616');
+      } else {
+        Funcs.doRequest(
+          'post',
+          this.$store.state.base_url + this.getApp.path_post,
+          {
+            INN: this.$store.state.inn,
+            Contract_GUID: this.activeObj.GUID,
+            DateFirst: this.actsDates.date_first,
+            DateLast: this.actsDates.date_last,
+            Date: `${Funcs.dateToInputs(new Date())[2]}-${Funcs.dateToInputs(new Date())[1]}-${Funcs.dateToInputs(new Date())[0]}`,
+          },
+          null,
+          'blob',
+          (res) => {
+            Funcs.downloadFile(res.data, 'Акт сверки.pdf', 'application/pdf')
+              .then((resolve) => {
+                if (!resolve) {
+                  this.showNotificaction('Данные за указанный период, не найдены', '#c23616');
+                }
+              });
+          },
+          () => {
+            this.showNotificaction('Сервер временно недоступен, попробуйте позже', '#c23616');
+          },
+        );
+      }
     },
     showNotificaction(text, color) {
       this.notification_text = text;

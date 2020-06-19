@@ -37,6 +37,14 @@ div.modal-wrap {
 div.active-modal-wrap {
   & .notif-frame {
     top: 40%;
+    & .frame-content {
+      & h2 {
+        font-size: 1.3em;
+      }
+      & button {
+        margin-top: 10px;
+      }
+    }
   }
 }
 
