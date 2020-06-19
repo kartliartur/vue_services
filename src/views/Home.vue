@@ -55,7 +55,7 @@ export default {
     padding: 20px 10px;
     background: #fff;
     border-radius: 5px;
-    margin: 15px 10px 15px 0;
+    margin: 15px 20px 15px 0;
     box-shadow: 6px 6px 10px rgba(34, 34, 34, 0.38);
     cursor: pointer;
     transition: transform .3s linear;
@@ -84,8 +84,6 @@ export default {
         margin-bottom: 5px;
       }
       & span {
-        overflow: hidden;
-        text-overflow: ellipsis;
         word-break: break-word;
         white-space: normal;
         font-weight: normal;

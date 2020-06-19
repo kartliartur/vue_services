@@ -74,6 +74,11 @@ export default {
           this.showNotificaction('Дата начала должна быть раньше, чем дата конца', '#c23616');
           return false;
         }
+      } else if (inputs.length === 1) {
+        if (new Date(inputs[0].value) < new Date()) {
+          this.showNotificaction('Дата должна быть не раньше текущей', '#c23616');
+          return false;
+        }
       }
       return true;
     },
