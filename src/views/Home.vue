@@ -1,8 +1,10 @@
 <template>
   <div class="home">
-    <div class="home-item" v-for="(item, i) in this.$store.state.categories"
-                           :key="i"
-                           @click="goTo(item.link)">
+    <div v-for="(item, i) in this.$store.state.categories"
+         :key="i"
+         @click="goTo(item)"
+         :class="{ 'home-item': true, disabled: item.status === 'В разработке' }">
+      <h2 class="dev-title" v-show="item.status === 'В разработке'">В разработке</h2>
       <img :src="getPath(item)" alt="">
       <div class="home-item-content">
         <h2 class="home-item-content-title">{{ item.name }}</h2>
@@ -26,8 +28,10 @@ export default {
       }
       return '';
     },
-    goTo(link) {
-      this.$router.push({ path: link });
+    goTo(item) {
+      if (item.status !== 'В разработке') {
+        this.$router.push({ path: item.link });
+      }
     },
   },
   mounted() {
@@ -92,6 +96,33 @@ export default {
         color: #828282;
         height: 40px;
       }
+    }
+  }
+
+  & .disabled {
+    position: relative;
+    cursor: unset;
+    &:hover {
+      transform: scale(1);
+      & img {
+        filter: grayscale(1);
+      }
+    }
+    & .dev-title {
+      position: absolute;
+      .flex(row, center, center);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,.8);
+      text-align: center;
+      z-index: 10;
+      color: #fff;
+      font-weight: 300;
+      font-size: 1.5em;
+      border-radius: 5px;
+      letter-spacing: 1px;
     }
   }
 }

@@ -4,6 +4,27 @@ import Vue from 'vue';
 Vue.use(axios);
 
 export default {
+  async repeatRequest(INN, Comment, guid, path) {
+    const promise = new Promise((resolve) => {
+      this.doRequest(
+        'post',
+        path,
+        {
+          INN,
+          Comment,
+          Document_GUID: guid,
+        },
+        null,
+        'json',
+        (res) => {
+          resolve(res);
+        },
+        () => { resolve('ERROR'); },
+      );
+    });
+    const response = await promise;
+    return response;
+  },
   dateToInputs: (date) => {
     let day = date.getDate();
     let month = date.getMonth() + 1;

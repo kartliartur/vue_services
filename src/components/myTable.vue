@@ -27,12 +27,24 @@
         <div class="frame-content">
           <div class="content-item" v-for="(item, idx) in modal_content" :key="idx">
             <span>{{ item.name }}</span>
-            <select v-if="item.type === 'select'">
-              <option :value="item.value">{{ item.value }}</option>
+            <select v-if="item.type === 'select'" v-model="modal_index">
+              <option v-for="(val, ind) in item.value" :key="ind" :value="ind">{{ val }}</option>
             </select>
-            <span v-else-if="item.type === 'text'" class="like-input">{{ item.value }}</span>
-            <input v-else-if="item.type === 'input'" :type="item.type" :value="item.value">
-            <input v-else-if="item.type === 'submit'" :type="item.type" :value="item.value">
+            <span v-else-if="item.type === 'text'" class="like-input">
+              {{ item.value[modal_index] }}
+            </span>
+            <div v-else-if="item.type === 'link'" class="like-link"
+              @click="downloadFileReq(false,
+              `${$store.state.base_url}/erp_base/hs/files/download/sale-attachment`,
+              item.file_name, `application/${item.file_extension}`,
+              'Данный файл не найден, обратитесь к администратору', item.guid)">
+              {{ `${item.file_name}.${item.file_extension}` }}
+            </div>
+            <input v-else-if="item.type === 'input'"
+              :type="item.type" v-model="item.value">
+            <input v-else-if="item.type === 'submit'"
+              :type="item.type" :value="item.value"
+              @click="callFunc($event)">
           </div>
         </div>
       </div>
@@ -47,7 +59,13 @@
           <div class="content-item" v-for="(value, key) in actsDates" :key="key">
             <input type="date" v-model="actsDates[key]" :name="key">
           </div>
-          <button @click="downloadFileReq()">Загрузить</button>
+          <button
+            @click="downloadFileReq(true,
+            $store.state.base_url + getApp.path_post,
+            'Акт Сверки.pdf', 'application/pdf',
+            'Данные за указанный период, не найдены')">
+            Загрузить
+          </button>
         </div>
       </div>
     </div>
@@ -76,6 +94,7 @@ export default {
     actsModalSubtitle: '',
     modalSubtitle: '',
     modalTitle: '',
+    modal_index: 0,
     activeObj: {},
     actsDates: {
       date_first: '',
@@ -87,13 +106,13 @@ export default {
         name: 'Марка:',
         variable: 'Product_Name',
         type: 'select',
-        value: '',
+        value: [],
       },
       {
         name: 'Количество',
         variable: 'Count',
         type: 'text',
-        value: '',
+        value: [],
       },
       {
         name: 'Комментарий:',
@@ -113,54 +132,59 @@ export default {
         name: 'Номенклатура:',
         variable: 'Рroduct',
         type: 'select',
-        value: '',
+        value: [],
       },
       {
         name: 'Количество:',
         variable: 'Count',
         type: 'text',
-        value: '',
+        value: [],
       },
       {
         name: 'Цена:',
         variable: 'Price',
         type: 'text',
-        value: '',
+        value: [],
       },
       {
         name: 'Сумма:',
         variable: 'Amount',
         type: 'text',
-        value: '',
+        value: [],
       },
       {
         name: 'НДС:',
         variable: 'VAT',
         type: 'text',
-        value: '',
+        value: [],
       },
       {
         name: 'Сумма НДС:',
         variable: 'AmountVAT',
         type: 'text',
-        value: '',
+        value: [],
       },
     ],
   }),
   methods: {
     requestAction(obj) {
-      window.console.log(obj);
       if (this.getApp.actions.length > 0) {
         this.activeObj = obj;
         if (this.getApp.actions[0] === 'open_modal') {
-          window.console.log('asd');
           this.openModalFunc(obj);
         } else if (this.getApp.actions[0] === 'download_file') {
           this.actsModalShow = true;
           this.actsModalSubtitle = obj.Name;
           this.actsDates.date_first = `${Funcs.dateToInputs(new Date())[2]}-${Funcs.dateToInputs(new Date())[3]}-${Funcs.dateToInputs(new Date())[0]}`;
           this.actsDates.date_last = `${Funcs.dateToInputs(new Date())[2]}-${Funcs.dateToInputs(new Date())[1]}-${Funcs.dateToInputs(new Date())[0]}`;
+        } else if (this.getApp.actions[0] === 'open_link') {
+          this.goToAnothersite();
         }
+      }
+    },
+    goToAnothersite() {
+      if (this.activeObj.MapUrl !== undefined) {
+        window.open(this.activeObj.MapUrl, '_blank');
       }
     },
     isLayout(item, name) {
@@ -169,68 +193,70 @@ export default {
       }
       return false;
     },
+    changeModalContent(subtitle, title, content) {
+      this.modalSubtitle = subtitle;
+      this.modalTitle = title;
+      this.modal_content = content;
+    },
     openModalFunc() {
-      if (this.getApp.link === '/purchases') {
-        const keys = Object.keys(this.activeObj.Products[0]);
-        this.modalSubtitle = this.activeObj.Document_Name;
-        this.modalTitle = 'Повторить поставку';
-        this.modal_content = this.orders_content;
+      if (this.getApp.link === '/purchases' && !this.activeObj.Is_modal_trigger) {
+        Funcs.doRequest(
+          'post',
+          `${this.$store.state.base_url}/erp_base/hs/contractors/get/purchase-attachments`,
+          {
+            Document_GUID: this.activeObj.Document_GUID,
+          },
+          null,
+          'json',
+          (res) => {
+            const arr = [];
+            res.data.data.map((item) => {
+              arr.push({
+                guid: item.File_GUID,
+                file_name: item.File_Name,
+                type: 'link',
+                file_extension: item.File_Extension,
+              });
+              return true;
+            });
+            this.changeModalContent(this.activeObj.Document_Name, 'Список вложений', arr);
+          },
+          () => { window.console.log('ERROR'); },
+        );
+        this.changeModalContent(this.activeObj.Document_Name, 'Список вложений');
+      } else {
+        const keys = Object.keys(this.activeObj.Modal_array[0]);
+        if (this.getApp.link === '/purchases') {
+          this.changeModalContent(this.activeObj.Document_Name, 'Повторить поставку', this.orders_content);
+        } else if (this.getApp.link === '/paysschedule') {
+          this.changeModalContent(this.activeObj.Document_Name, 'Документ', this.payments_content);
+        }
         for (let i = 0; i < this.modal_content.length; i += 1) {
           const item = this.modal_content[i];
           keys.map((elem) => {
-            window.console.log(`${elem} ${item.variable}`);
-            if (elem === item.variable) {
-              item.value = this.activeObj.Products[0][elem];
-            }
+            this.activeObj.Modal_array.map((val) => {
+              if (elem === item.variable) {
+                item.value.push(val[elem]);
+              }
+              return true;
+            });
             return true;
           });
         }
-        this.modalShow = true;
       }
-      // Funcs.doRequest(
-      //   'post',
-      //   this.$store.state.base_url + this.getApp.path_post,
-      //   {
-      //     INN: this.$store.state.inn,
-      //     GUID: this.activeObj.GUID,
-      //     Order_GUID: this.activeObj.Document_GUID,
-      //   },
-      //   null,
-      //   'json',
-      //   (res) => {
-      //     if (res.data.error) {
-      //       this.showNotificaction(res.data.report, '#c23616');
-      //     } else {
-      //       const keys = Object.keys(res.data.data[0]);
-      //       this.modalSubtitle = this.activeObj.Document;
-      //       for (let i = 0; i < this.payments_content.length; i += 1) {
-      //         const item = this.payments_content[i];
-      //         keys.map((elem) => {
-      //           if (elem === item.variable) {
-      //             item.value = res.data.data[0][elem];
-      //           }
-      //           return true;
-      //         });
-      //       }
-      //       this.modalShow = true;
-      //     }
-      //   },
-      //   () => {
-      //     this.showNotificaction('Сервер временно недоступен, попробуйте позже', '#c23616');
-      //   },
-      // );
+      this.modalShow = true;
     },
-    downloadFileReq() {
-      if (new Date(this.actsDates.date_first) > new Date(this.actsDates.date_last)) {
+    downloadFileReq(flag, path, fileName, fileType, message, guid) {
+      if ((new Date(this.actsDates.date_first) > new Date(this.actsDates.date_last) && flag)) {
         this.showNotificaction('Дата начала должна быть раньше, чем дата конца', '#c23616');
       } else {
         Funcs.doRequest(
           'post',
-          this.$store.state.base_url + this.getApp.path_post,
+          path,
           {
             INN: this.$store.state.inn,
             Contract_GUID: this.activeObj.GUID,
-            Order_GUID: this.activeObj.GUID,
+            GUID: guid,
             DateFirst: this.actsDates.date_first,
             DateLast: this.actsDates.date_last,
             Date: `${Funcs.dateToInputs(new Date())[2]}-${Funcs.dateToInputs(new Date())[1]}-${Funcs.dateToInputs(new Date())[0]}`,
@@ -238,10 +264,10 @@ export default {
           null,
           'blob',
           (res) => {
-            Funcs.downloadFile(res.data, 'Акт сверки.pdf', 'application/pdf')
+            Funcs.downloadFile(res.data, fileName, fileType)
               .then((resolve) => {
                 if (!resolve) {
-                  this.showNotificaction('Данные за указанный период, не найдены', '#c23616');
+                  this.showNotificaction(message, '#c23616');
                 }
               });
           },
@@ -250,6 +276,18 @@ export default {
           },
         );
       }
+    },
+    callFunc(e) {
+      e.preventDefault();
+      Funcs.repeatRequest(this.$store.state.inn, this.modal_content[2].value,
+        this.activeObj.Document_GUID, this.$store.state.base_url + this.getApp.path_post)
+        .then((resolve) => {
+          if (!resolve.data.error) {
+            this.showNotificaction('Запрос успешно отправлен!', '#66ab55');
+          } else {
+            this.showNotificaction(resolve.data.report, '#c23616');
+          }
+        });
     },
     showNotificaction(text, color) {
       this.notification_text = text;

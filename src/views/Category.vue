@@ -4,9 +4,11 @@
       <img :src="getPath(getCategoryArray[0])" width="36px">
       <h1>{{ getCategoryArray[0].name }}</h1>
     </div>
-    <div class="home-item" v-for="(item, i) in getCategoryArray[0].links"
-                               :key="i"
-                               @click="goTo(`/${getCategoryName}${item.link}`)">
+    <div v-for="(item, i) in getCategoryArray[0].links"
+         :key="i"
+         @click="goTo(item)"
+         :class="{ 'home-item': true, disabled: item.status === 'В разработке' }">
+      <h2 class="dev-title" v-show="item.status === 'В разработке'">В разработке</h2>
       <img :src="getPath(item)" width="40px">
       <div class="home-item-content">
         <h2 class="home-item-content-title">{{ item.name }}</h2>
@@ -29,10 +31,12 @@ export default {
       }
       return '';
     },
-    goTo(link) {
-      this.$router.push({
-        path: link,
-      });
+    goTo(item) {
+      if (item.status !== 'В разработке') {
+        this.$router.push({
+          path: `/${this.getCategoryName}${item.link}`,
+        });
+      }
     },
   },
   computed: {
