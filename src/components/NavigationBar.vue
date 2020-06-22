@@ -1,8 +1,8 @@
 <template>
   <div class="nav-bar">
-    <img src="../assets/images/back.svg" @click="$router.go(-1)" width="25px" title="Назад"
+    <img src="../assets/images/back.svg" @click="back()" width="25px" title="Назад"
       class="active">
-    <img src="../assets/images/back2.svg" @click="$router.go(-1)" width="25px" title="Назад"
+    <img src="../assets/images/back2.svg" @click="back()" width="25px" title="Назад"
       class="hidden back">
     <InnBar @click.native="changeActiveMenu('inn', $event)"
       :modalShow="this.activeMenu === 'inn'"
@@ -79,6 +79,17 @@ export default {
         this.activeMenu = name === this.activeMenu ? null : name;
       }
       window.console.log(this.activeMenu);
+    },
+    back() {
+      let link = window.location.href;
+      let index = link.lastIndexOf('/');
+      link = link.replace(link.substring(index), '');
+      index = link.lastIndexOf('/');
+      if (index !== 6) {
+        this.$router.push({ path: link.substring(index) });
+      } else {
+        this.$router.push({ path: '/' });
+      }
     },
   },
   computed: {

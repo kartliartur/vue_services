@@ -89,7 +89,7 @@ export default {
       }
       & span {
         word-break: break-word;
-        white-space: normal;
+        white-space: pre-line;
         font-weight: normal;
         font-size: 12px;
         line-height: 14px;
