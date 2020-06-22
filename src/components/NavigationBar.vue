@@ -46,7 +46,7 @@
           <div class="nav-item-list-item name-row">
               <span>{{ getUserName }}</span>
           </div>
-          <div class="nav-item-list-item">
+          <div class="nav-item-list-item" v-if="!isAuth">
               <a href="https://passport.kartli.ch/auth/logout">Выход</a>
           </div>
       </div>
@@ -95,7 +95,7 @@ export default {
   },
   computed: {
     isAuth() {
-      return this.$store.state.user === null && this.$store.state.user === undefined;
+      return this.$store.state.user === null;
     },
     getUserName() {
       if (this.$store.state.user != null) {

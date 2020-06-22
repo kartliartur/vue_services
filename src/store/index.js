@@ -10,7 +10,7 @@ export default new Vuex.Store({
     user: null,
     categories: [],
     base_url: 'https://personal.back.kartli.ch/api/v1',
-    host_url: 'https://temp.personal.back.unlogic.ru',
+    host_url: 'https://personal.back.kartli.ch',
     inn: '',
     activeAppData: {},
   },
