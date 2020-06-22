@@ -24,6 +24,7 @@ export default new Vuex.Store({
   actions: {
     login: (context, app) => {
       window.console.log(document.cookie);
+      window.console.log(document.cookie);
       if (context.state.user === null) {
         Funcs.doRequest(
           'post',
