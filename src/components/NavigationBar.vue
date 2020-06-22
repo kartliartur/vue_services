@@ -85,8 +85,8 @@ export default {
       let index = link.lastIndexOf('/');
       link = link.replace(link.substring(index), '');
       index = link.lastIndexOf('/');
-      window.console.log(this.$router);
-      if (index !== 6) {
+      window.console.log(window.location.href);
+      if (index !== 7 || index !== 6) {
         this.$router.push({ path: link.substring(index) });
       } else {
         this.$router.push({ path: '/' });
