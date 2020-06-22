@@ -29,7 +29,7 @@ export default new Vuex.Store({
       if (context.state.user === null) {
         Funcs.doRequest(
           'post',
-          `${context.base_url}auth/data`,
+          `${context.state.base_url}/auth/data`,
           {
             session: cooks,
           },
