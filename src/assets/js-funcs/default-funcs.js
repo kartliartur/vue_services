@@ -77,6 +77,9 @@ export default {
   doRequest(type, url, data, params, rT, success, error) {
     const preloadScreen = document.getElementById('preload');
     preloadScreen.setAttribute('style', 'display: flex;');
+    let cooks = document.cookie;
+    cooks = cooks.substring(cooks.indexOf('passport_session_id='));
+    cooks = cooks.replace('passport_session_id=', '');
     axios({
       url,
       method: type,
@@ -85,7 +88,7 @@ export default {
       params,
       headers:
       {
-        Session: '881pij7libmh3br91b27n5hk1eur28s7',
+        Session: cooks,
       },
     })
       .then((res) => {
