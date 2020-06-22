@@ -32,7 +32,7 @@
           </div>
           <div class="nav-item-list-item" v-if="isAuth">
               <img src="" alt="">
-              <a href="https://passport.kartli.ch/account/">Вход</a>
+              <a :href='getMyAddress'>Вход</a>
           </div>
       </div>
     </div>
@@ -105,6 +105,7 @@ export default {
       return '';
     },
     getInn: () => localStorage.getItem('admin_inn'),
+    getMyAddress: () => `https://passport.kartli.ch/auth/?next=${window.location.href}`,
   },
 };
 </script>
