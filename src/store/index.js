@@ -23,13 +23,13 @@ export default new Vuex.Store({
   },
   actions: {
     login: (context, app) => {
-      window.console.log(context.state.user);
+      window.console.log(document.cookie);
       if (context.state.user === null) {
         Funcs.doRequest(
           'post',
           'https://personal.back.unlogic.ru/api/v1/auth/data',
           {
-            session: '881pij7libmh3br91b27n5hk1eur28s7',
+            session: '',
           },
           null,
           'json',
