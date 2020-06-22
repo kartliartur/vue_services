@@ -23,14 +23,15 @@ export default new Vuex.Store({
   },
   actions: {
     login: (context, app) => {
-      window.console.log(document.cookie);
-      window.console.log(document.cookie);
+      let cooks = document.cookie;
+      cooks = cooks.substring(cooks.indexOf('passport_session_id='));
+      cooks = cooks.replace('passport_session_id=', '');
       if (context.state.user === null) {
         Funcs.doRequest(
           'post',
           'https://personal.back.unlogic.ru/api/v1/auth/data',
           {
-            session: '',
+            session: cooks,
           },
           null,
           'json',
