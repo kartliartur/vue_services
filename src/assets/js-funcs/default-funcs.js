@@ -47,9 +47,9 @@ export default {
       let text = '';
       let result = true;
       let flag = false;
+      window.console.log(fileName);
       reader.addEventListener('loadend', (e) => {
         text = e.srcElement.result;
-        window.console.log(text);
         flag = text.includes('{"error": true, "report":');
         if (flag) {
           result = false;

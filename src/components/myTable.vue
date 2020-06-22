@@ -11,7 +11,9 @@
       </thead>
       <tr v-for="(item, idx) in this.data" :key="idx"
           @click="requestAction(item)"
-          :class="{ title: isLayout(item, 'Bold'), padded: isLayout(item, 'Padding') }">
+          :class="{ title: isLayout(item, 'Bold'),
+            padded: isLayout(item, 'Padding'),
+            pointed: getApp.actions.length > 0 }">
         <td v-for="(elem, i) in displayedArr" :key="i"
           :style="{ width: (100/getApp.table_labels.length) + '%' }">
           {{ item[elem] }}
@@ -36,7 +38,7 @@
             <div v-else-if="item.type === 'link'" class="like-link"
               @click="downloadFileReq(false,
               `${$store.state.base_url}/erp_base/hs/files/download/sale-attachment`,
-              item.file_name, `application/${item.file_extension}`,
+              `${item.file_name}.${item.file_extension}`, `application/${item.file_extension}`,
               'Данный файл не найден, обратитесь к администратору', item.guid)">
               {{ `${item.file_name}.${item.file_extension}` }}
             </div>
@@ -223,7 +225,6 @@ export default {
           },
           () => { window.console.log('ERROR'); },
         );
-        this.changeModalContent(this.activeObj.Document_Name, 'Список вложений');
       } else {
         const keys = Object.keys(this.activeObj.Modal_array[0]);
         if (this.getApp.link === '/purchases') {
@@ -325,12 +326,8 @@ export default {
     border-bottom: 1px solid #fff;
 
     & tr {
-      cursor: pointer;
       background: #fff;
       border-bottom: 1px solid transparent;
-      &:hover {
-        border-color: @green-color;
-      }
 
       & td, th {
         padding: 2.5px 10px;
@@ -359,6 +356,12 @@ export default {
     & .padded {
       & td:first-child {
         padding-left: 40px;
+      }
+    }
+    & .pointed {
+      cursor: pointer;
+      &:hover {
+        border-color: @green-color;
       }
     }
   }

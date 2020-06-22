@@ -67,14 +67,14 @@ export default {
         'json',
         (res) => {
           if (!res.data.data.error) {
-            this.showNotificaction(res.data.data.data, 'green');
+            this.showNotificaction(res.data.data.data, '#66ab55');
             this.spinnerShow = true;
             setTimeout(() => {
               this.spinnerShow = false;
               window.location.reload();
             }, 60000);
           } else {
-            this.showNotificaction(res.data.data.report, 'green');
+            this.showNotificaction(res.data.data.data, '#c23616');
           }
         },
         () => {
