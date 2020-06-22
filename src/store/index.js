@@ -9,7 +9,7 @@ export default new Vuex.Store({
     company_name: 'Без компании',
     user: null,
     categories: [],
-    base_url: 'https://temp.personal.back.unlogic.ru/api/v1',
+    base_url: 'https://personal.back.kartli.ch/api/v1',
     host_url: 'https://temp.personal.back.unlogic.ru',
     inn: '',
     activeAppData: {},
@@ -29,7 +29,7 @@ export default new Vuex.Store({
       if (context.state.user === null) {
         Funcs.doRequest(
           'post',
-          'https://temp.personal.back.unlogic.ru/api/v1/auth/data',
+          `${context.base_url}auth/data`,
           {
             session: cooks,
           },
