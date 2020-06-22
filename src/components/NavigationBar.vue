@@ -81,12 +81,12 @@ export default {
       window.console.log(this.activeMenu);
     },
     back() {
-      let link = window.location.href;
+      let link = window.location.href.replace('https://', '').replace('http://', '');
       let index = link.lastIndexOf('/');
       link = link.replace(link.substring(index), '');
       index = link.lastIndexOf('/');
-      window.console.log(window.location.href);
-      if (index !== 7 || index !== 6) {
+      window.console.log(link);
+      if (index !== -1) {
         this.$router.push({ path: link.substring(index) });
       } else {
         this.$router.push({ path: '/' });
