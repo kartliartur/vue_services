@@ -7,7 +7,7 @@
     <InnBar @click.native="changeActiveMenu('inn', $event)"
       :modalShow="this.activeMenu === 'inn'"
       :currentInn="getInn"
-      v-if="$store.state.user.user.is_superuser"/>
+      v-if="isAdmin"/>
     <div class="nav-item services-wrap">
       <img src="../assets/images/main-menu.png" width="25px" class="menu-icon active"
         @click="changeActiveMenu('services')">
@@ -97,6 +97,12 @@ export default {
   computed: {
     isAuth() {
       return this.$store.state.user === null;
+    },
+    isAdmin() {
+      if (this.$store.state.user !== null) {
+        return this.$store.state.user.user.is_superuser;
+      }
+      return false;
     },
     getUserName() {
       if (this.$store.state.user != null) {

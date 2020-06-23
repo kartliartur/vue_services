@@ -23,7 +23,7 @@
     <div :class="{ 'modal-wrap': true, 'active-modal-wrap': modalShow }">
       <div class="hover"></div>
       <div class="modal-frame">
-        <span @click="modalShow=false" class="close">×</span>
+        <span @click="closeModal()" class="close">×</span>
         <h2>{{ modalTitle }}</h2>
         <span class="subtitle">{{ modalSubtitle }}</span>
         <div class="frame-content">
@@ -236,11 +236,12 @@ export default {
           const item = this.modal_content[i];
           keys.map((elem) => {
             this.activeObj.Modal_array.map((val) => {
-              if (elem === item.variable) {
+              if (elem === item.variable && !item.isFull) {
                 item.value.push(val[elem]);
               }
               return true;
             });
+            item.isFull = true;
             return true;
           });
         }
@@ -289,6 +290,10 @@ export default {
             this.showNotificaction(resolve.data.report, '#c23616');
           }
         });
+    },
+    closeModal() {
+      this.modalShow = false;
+      this.modal_content = [];
     },
     showNotificaction(text, color) {
       this.notification_text = text;
