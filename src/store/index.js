@@ -23,16 +23,16 @@ export default new Vuex.Store({
   },
   actions: {
     async login(context, app) {
-      // let cooks = document.cookie;
-      // // cooks = cooks.substring(cooks.indexOf('passport_session_id='));
-      // // cooks = cooks.replace('passport_session_id=', '');
+      let cooks = document.cookie;
+      cooks = cooks.substring(cooks.indexOf('passport_session_id='));
+      cooks = cooks.replace('passport_session_id=', '');
       const promise = new Promise((resolve) => {
         if (context.state.user === null) {
           Funcs.doRequest(
             'post',
             `${context.state.base_url}/auth/data`,
             {
-              session: '1jiublhji4dzj33grlsfp6ombq3dimzy',
+              session: cooks,
             },
             null,
             'json',
