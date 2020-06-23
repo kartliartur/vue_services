@@ -6,7 +6,8 @@
       class="hidden back">
     <InnBar @click.native="changeActiveMenu('inn', $event)"
       :modalShow="this.activeMenu === 'inn'"
-      :currentInn="getInn"/>
+      :currentInn="getInn"
+      v-if="$store.state.user.user.is_superuser"/>
     <div class="nav-item services-wrap">
       <img src="../assets/images/main-menu.png" width="25px" class="menu-icon active"
         @click="changeActiveMenu('services')">
