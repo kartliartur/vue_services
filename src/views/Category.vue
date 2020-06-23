@@ -1,29 +1,40 @@
 <template>
   <div class="home category">
-    <div class="category-title">
-      <img :src="getPath(getCategoryArray[0])" width="36px">
-      <h1>{{ getCategoryArray[0].name }}</h1>
-    </div>
-    <div v-for="(item, i) in getCategoryArray[0].links"
-         :key="i"
-         @click="goTo(item)"
-         :class="{ 'home-item': true, disabled: item.status === 'В разработке' }">
-      <h2 class="dev-title" v-show="item.status === 'В разработке'">В разработке</h2>
-      <img :src="getPath(item)" width="40px">
-      <div class="home-item-content">
-        <h2 class="home-item-content-title">{{ item.name }}</h2>
-        <span v-show="item.description != undefined && item.description.length > 0">
-          {{ item.description }}
-        </span>
+    <errorWrap v-if="is_error" :text="error_text"/>
+    <div v-else class="category-content">
+      <div class="category-title">
+        <img :src="getPath(getCategoryArray[0])" width="36px">
+        <h1>{{ getCategoryArray[0].name }}</h1>
+      </div>
+      <div v-for="(item, i) in getCategoryArray[0].links"
+           :key="i"
+           @click="goTo(item)"
+           :class="{ 'home-item': true, disabled: item.status === 'В разработке' }">
+        <h2 class="dev-title" v-show="item.status === 'В разработке'">В разработке</h2>
+        <img :src="getPath(item)" width="40px">
+        <div class="home-item-content">
+          <h2 class="home-item-content-title">{{ item.name }}</h2>
+          <span v-show="item.description != undefined && item.description.length > 0">
+            {{ item.description }}
+          </span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script type="text/javascript">
+import errorWrap from '@/components/errorWrap.vue';
 
 export default {
   name: 'Category',
+  components: {
+    errorWrap,
+  },
+  data: () => ({
+    is_error: false,
+    error_text: '',
+  }),
   methods: {
     getPath(item) {
       if (item !== undefined) {
@@ -47,7 +58,13 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('login');
+    this.$store.dispatch('login')
+      .then((resolve) => {
+        if (resolve !== true) {
+          this.is_error = true;
+          this.error_text = resolve;
+        }
+      });
   },
 };
 
@@ -62,6 +79,13 @@ export default {
   flex-wrap: wrap;
   width: 100%;
   height: auto;
+
+  & .category-content {
+    .flex(row, flex-start, center);
+    flex-wrap: wrap;
+    width: 100%;
+    height: auto;
+  }
 
   & &-title {
     .flex(row, flex-start, flex-end);

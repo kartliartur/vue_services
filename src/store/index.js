@@ -22,36 +22,44 @@ export default new Vuex.Store({
     setActiveAppDate(state, value) { state.activeAppData = value; },
   },
   actions: {
-    login: (context, app) => {
-      let cooks = document.cookie;
-      cooks = cooks.substring(cooks.indexOf('passport_session_id='));
-      cooks = cooks.replace('passport_session_id=', '');
-      if (context.state.user === null) {
-        Funcs.doRequest(
-          'post',
-          `${context.state.base_url}/auth/data`,
-          {
-            session: cooks,
-          },
-          null,
-          'json',
-          (res) => {
-            window.console.log(res.data);
-            context.commit('categoriesMutation', res.data.data.categories);
-            context.commit('serCompanyName', res.data.data.user.company.short_name);
-            context.commit('setUser', res.data.data.user);
-            if (localStorage.getItem('admin_inn') === undefined && context.state.user.user.is_superuser === false) {
-              context.commit('setINN', res.data.data.user.company.inn);
-            } else {
-              context.commit('setINN', localStorage.getItem('admin_inn'));
-            }
-            Funcs.getAppData(context, app);
-          },
-          () => { window.console.log('ERROR'); },
-        );
-      } else {
-        Funcs.getAppData(context, app);
-      }
+    async login(context, app) {
+      // let cooks = document.cookie;
+      // // cooks = cooks.substring(cooks.indexOf('passport_session_id='));
+      // // cooks = cooks.replace('passport_session_id=', '');
+      const promise = new Promise((resolve) => {
+        if (context.state.user === null) {
+          Funcs.doRequest(
+            'post',
+            `${context.state.base_url}/auth/data`,
+            {
+              session: '1jiublhji4dzj33grlsfp6ombq3dimzy',
+            },
+            null,
+            'json',
+            (res) => {
+              if (res.data.error) {
+                resolve('У вас нет прав на получение данных, авторизируйтесь или зарегистрируйтесь в системе');
+              } else {
+                context.commit('categoriesMutation', res.data.data.categories);
+                context.commit('serCompanyName', res.data.data.user.company.short_name);
+                context.commit('setUser', res.data.data.user);
+                if (localStorage.getItem('admin_inn') === undefined && context.state.user.user.is_superuser === false) {
+                  context.commit('setINN', res.data.data.user.company.inn);
+                } else {
+                  context.commit('setINN', localStorage.getItem('admin_inn'));
+                }
+                Funcs.getAppData(context, app);
+                resolve(true);
+              }
+            },
+            () => { window.console.log('ERROR'); },
+          );
+        } else {
+          Funcs.getAppData(context, app);
+        }
+      });
+      const result = await promise;
+      return result;
     },
   },
   modules: {

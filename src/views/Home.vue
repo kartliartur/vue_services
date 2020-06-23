@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-    <div v-for="(item, i) in this.$store.state.categories"
+    <errorWrap v-if="is_error" :text="error_text"/>
+    <div v-else
+         v-for="(item, i) in this.$store.state.categories"
          :key="i"
          @click="goTo(item)"
          :class="{ 'home-item': true, disabled: item.status === 'В разработке' }">
@@ -18,9 +20,17 @@
 
 <script>
 // @ is an alias to /src
+import errorWrap from '@/components/errorWrap.vue';
 
 export default {
   name: 'Home',
+  components: {
+    errorWrap,
+  },
+  data: () => ({
+    is_error: false,
+    error_text: '',
+  }),
   methods: {
     getPath(item) {
       if (item !== undefined) {
@@ -35,7 +45,13 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('login');
+    this.$store.dispatch('login')
+      .then((resolve) => {
+        if (resolve !== true) {
+          this.is_error = true;
+          this.error_text = resolve;
+        }
+      });
   },
 };
 

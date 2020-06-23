@@ -1,10 +1,11 @@
 <template>
   <div class="category-app">
-    <div class="category-app-title">
+    <errorWrap v-if="is_error" :text="error_text"/>
+    <div v-else class="category-app-title">
       <img :src="getPath(getAppObject)" width="36px">
       <h1>{{ getAppObject.name }}</h1>
     </div>
-    <div class="category-app-content">
+    <div v-if="!is_error" class="category-app-content">
       <div class="actions-bar">
         <div class="content-item" v-for="(item, idx) in getAppObject.inputs" :key="idx">
           <input :type="item.type" v-model="item.value" :name="item.label">
@@ -40,6 +41,7 @@ import Funcs from '@/assets/js-funcs/default-funcs';
 import myTable from '@/components/myTable.vue';
 import spinner from '@/components/spinner.vue';
 import MyNotification from '@/components/myNotification.vue';
+import errorWrap from '@/components/errorWrap.vue';
 
 export default {
   name: 'CategoryApp',
@@ -47,6 +49,7 @@ export default {
     myTable,
     MyNotification,
     spinner,
+    errorWrap,
   },
   data: () => ({
     showModal: false,
@@ -54,6 +57,8 @@ export default {
     notification_color: '',
     notification_show: false,
     spinnerShow: false,
+    error_text: '',
+    is_error: false,
   }),
   methods: {
     updatePlaceholder() {
@@ -98,7 +103,13 @@ export default {
           name: this.getAppName,
           category: this.getCategoryName,
           data: {},
-        });
+        })
+          .then((resolve) => {
+            if (resolve !== true) {
+              this.is_error = true;
+              this.error_text = resolve;
+            }
+          });
       }
     },
     inputsValidate() {
