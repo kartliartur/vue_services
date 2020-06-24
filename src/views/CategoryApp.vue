@@ -120,12 +120,12 @@ export default {
     inputsValidate() {
       const { inputs } = this.getAppObject;
       if (inputs.length > 1) {
-        if (new Date(inputs[0].value) > new Date(inputs[1].value)) {
+        if (new Date(inputs[0].value) >= new Date(inputs[1].value)) {
           this.showNotificaction('Дата начала должна быть раньше, чем дата конца', '#c23616');
           return false;
         }
       } else if (inputs.length === 1) {
-        if (new Date(inputs[0].value) < new Date()) {
+        if (new Date(inputs[0].value) <= new Date()) {
           this.showNotificaction('Дата должна быть не раньше текущей', '#c23616');
           return false;
         }
