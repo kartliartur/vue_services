@@ -126,7 +126,7 @@ export default {
         }
       } else if (inputs.length === 1) {
         const currentDate = new Date();
-        currentDate.setTime(currentDate.getTime() - 24*60*60*1000);
+        currentDate.setTime(currentDate.getTime() - 24 * 60 * 60 * 1000);
         if (new Date(inputs[0].value) <= new Date(currentDate)) {
           this.showNotificaction('Дата должна быть не раньше текущей', '#c23616');
           return false;
