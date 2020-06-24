@@ -169,7 +169,7 @@ export default {
         return Funcs
           .filterByParams(this.$store.state.categories, this.getCategoryName, this.getAppName);
       }
-      return '';
+      return { name: 'asd' };
     },
     checkAppData() {
       if (this.$store.state.activeAppData.data !== undefined) {

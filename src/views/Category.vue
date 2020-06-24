@@ -53,8 +53,11 @@ export default {
   computed: {
     getCategoryName: () => window.location.pathname.substr(1),
     getCategoryArray() {
-      return this.$store.state.categories
-        .filter((item) => item.link.substr(1) === this.getCategoryName);
+      if (this.$store.state.categories.length > 0) {
+        return this.$store.state.categories
+          .filter((item) => item.link.substr(1) === this.getCategoryName);
+      }
+      return [{ name: 'asd' }];
     },
   },
   mounted() {
