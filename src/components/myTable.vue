@@ -3,20 +3,20 @@
     <table>
       <thead>
         <tr>
-          <th v-for="(td, i) in getApp.table_labels" :key="i"
-            :style="{ width: (100/getApp.table_labels.length) + '%' }">
-            {{ td.name_display }}
+          <th v-for="(td, i) in tableHeaders" :key="i"
+            :style="{ width: (100/tableHeaders.length) + '%' }">
+            {{ td }}
           </th>
         </tr>
       </thead>
-      <tr v-for="(item, idx) in this.data" :key="idx"
+      <tr v-for="(item, idx) in tableContent" :key="idx"
           @click="requestAction(item)"
           :class="{ title: isLayout(item, 'Bold'),
             padded: isLayout(item, 'Padding'),
             pointed: getApp.actions.length > 0 }">
-        <td v-for="(elem, i) in displayedArr" :key="i"
-          :style="{ width: (100/getApp.table_labels.length) + '%' }">
-          {{ item[elem] }}
+        <td v-for="(elem, i) in item" :key="i"
+          :style="{ width: (100/tableHeaders.length) + '%' }">
+          {{ elem }}
         </td>
       </tr>
     </table>
@@ -86,7 +86,7 @@ export default {
   components: {
     MyNotification,
   },
-  props: ['data', 'category', 'app'],
+  props: ['category', 'app', 'tableContent', 'tableHeaders'],
   data: () => ({
     notification_text: '',
     notification_color: '',
@@ -300,15 +300,13 @@ export default {
       this.notification_color = color;
       this.notification_show = true;
     },
+    returnDisplayElem(item, elem) {
+      return item[elem];
+    },
   },
   computed: {
     getApp() {
       return Funcs.filterByParams(this.$store.state.categories, this.category, this.app);
-    },
-    displayedArr() {
-      const arr = [];
-      this.getApp.table_labels.map((item) => arr.push(item.name_1c));
-      return arr;
     },
   },
 };

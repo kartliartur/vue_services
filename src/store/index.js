@@ -38,7 +38,10 @@ export default new Vuex.Store({
             'json',
             (res) => {
               if (res.data.error) {
-                resolve('У вас нет прав на получение данных, авторизируйтесь или зарегистрируйтесь в системе');
+                resolve({
+                  text: 'У вас нет прав на получение данных, авторизируйтесь или зарегистрируйтесь в системе',
+                  error: true,
+                });
               } else {
                 context.commit('categoriesMutation', res.data.data.categories);
                 context.commit('serCompanyName', res.data.data.user.company.short_name);
@@ -48,14 +51,21 @@ export default new Vuex.Store({
                 } else {
                   context.commit('setINN', localStorage.getItem('admin_inn'));
                 }
-                Funcs.getAppData(context, app);
-                resolve(true);
+                Funcs.getAppData(context, app)
+                  .then((response) => resolve({
+                    result: response,
+                    error: false,
+                  }));
               }
             },
             () => { window.console.log('ERROR'); },
           );
         } else {
-          Funcs.getAppData(context, app);
+          Funcs.getAppData(context, app)
+            .then((response) => resolve({
+              result: response,
+              error: false,
+            }));
         }
       });
       const result = await promise;

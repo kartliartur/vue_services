@@ -114,37 +114,51 @@ export default {
     }
     return false;
   },
-  getAppData(context, app) {
+  async getAppData(context, app) {
     if (app !== undefined) {
-      const appObj = this.filterByParams(context.state.categories, app.category, app.name);
-      const { data } = app;
-      data.INN = context.state.inn;
-      if (appObj.inputs.filter((item) => item.label === 'date_start')[0] !== undefined) {
-        data.DateFirst = appObj.inputs.filter((item) => item.label === 'date_start')[0].value;
-      }
-      if (appObj.inputs.filter((item) => item.label === 'date_end')[0]) {
-        data.DateLast = appObj.inputs.filter((item) => item.label === 'date_end')[0].value;
-      }
-      this.doRequest(
-        'post',
-        context.state.base_url + appObj.path_get,
-        data,
-        null,
-        'json',
-        (res) => {
-          if (res.data.data.data !== undefined) {
-            window.console.log(res.data.data);
-            context.commit('setActiveAppDate', res.data.data);
-          } else {
-            context.commit('setActiveAppDate', res.data);
-          }
-          window.console.log(context.state);
-        },
-        () => {
-          window.console.log('ERRROR');
-          context.commit('setActiveAppDate', { report: 'Что-то пошло не так, сообщите нам об ошибке!' });
-        },
-      );
+      const promise = new Promise((resolve) => {
+        const appObj = this.filterByParams(context.state.categories, app.category, app.name);
+        const { data } = app;
+        data.INN = context.state.inn;
+        if (appObj.inputs.filter((item) => item.label === 'date_start')[0] !== undefined) {
+          data.DateFirst = appObj.inputs.filter((item) => item.label === 'date_start')[0].value;
+        }
+        if (appObj.inputs.filter((item) => item.label === 'date_end')[0]) {
+          data.DateLast = appObj.inputs.filter((item) => item.label === 'date_end')[0].value;
+        }
+        this.doRequest(
+          'post',
+          context.state.base_url + appObj.path_get,
+          data,
+          null,
+          'json',
+          (res) => {
+            if (res.data.data.data !== undefined) {
+              window.console.log(res.data.data);
+              context.commit('setActiveAppDate', res.data.data);
+            } else {
+              context.commit('setActiveAppDate', res.data);
+            }
+            window.console.log(context.state);
+            resolve(res.data);
+          },
+          () => {
+            window.console.log('ERRROR');
+            context.commit('setActiveAppDate', { report: 'Что-то пошло не так, сообщите нам об ошибке!' });
+          },
+        );
+      });
+      const res = await promise;
+      return res;
     }
+    return null;
+  },
+  addElementToArray(arr, index, val) {
+    const result = arr;
+    while (result.length <= index) {
+      result.push(null);
+    }
+    result[index] = val;
+    return result;
   },
 };

@@ -47,9 +47,9 @@ export default {
   mounted() {
     this.$store.dispatch('login')
       .then((resolve) => {
-        if (resolve !== true) {
+        if (resolve.error === true) {
           this.is_error = true;
-          this.error_text = resolve;
+          this.error_text = resolve.text;
         }
       });
   },

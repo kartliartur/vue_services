@@ -26,9 +26,10 @@
         Список пуст
       </h2>
       <myTable v-else
-        :data="this.$store.state.activeAppData.data"
         :category="this.getCategoryName"
-        :app="this.getAppName"/>
+        :app="this.getAppName"
+        :tableHeaders="getHeaders"
+        :tableContent="this.table_content"/>
     </div>
     <MyNotification :text="notification_text" :textColor="notification_color"
       :isShow="notification_show" @toggleNotif="notification_show=false"/>
@@ -52,6 +53,8 @@ export default {
     errorWrap,
   },
   data: () => ({
+    table_headers: [],
+    table_content: [],
     showModal: false,
     notification_text: '',
     notification_color: '',
@@ -105,9 +108,11 @@ export default {
           data: {},
         })
           .then((resolve) => {
-            if (resolve !== true) {
+            if (resolve.error === true) {
               this.is_error = true;
-              this.error_text = resolve;
+              this.error_text = resolve.text;
+            } else {
+              this.displayedArr(this.$store.state.activeAppData.data);
             }
           });
       }
@@ -154,6 +159,62 @@ export default {
           this.showNotificaction('Сервер временно недоступен, попробуйте позже', '#c23616');
         },
       );
+    },
+    displayedArr(data) {
+      const formatLables = {};
+      this.getAppObject.table_labels.map((item) => {
+        if (!item.name_1c.includes('__')) {
+          formatLables[item.name_1c] = [];
+        } else {
+          const key = item.name_1c.substring(0, item.name_1c.indexOf('__'));
+          if (formatLables[key] === undefined) {
+            formatLables[key] = [];
+          }
+          formatLables[key].push(item.name_1c.substring(item.name_1c.indexOf('__') + 2));
+        }
+        return true;
+      });
+      for (let i = 0; i < data.length; i += 1) {
+        const indexator = { j: 0 }; // Индекс столбцов
+        this.table_content.push([]); // Пихаем пустой массив (создаем строку)
+        const formatKeys = Object.keys(formatLables);
+        for (let k = 0; k < formatKeys.length; k += 1) { // Ключи polymer и years
+          const item = formatLables[formatKeys[k]];
+          if (item.length === 0) {
+            this.table_headers = Funcs.addElementToArray(this.table_headers,
+              indexator.j, this.translateTitle(formatKeys[k]));
+            this.table_content[i] = Funcs.addElementToArray(this.table_content[i],
+              indexator.j, data[i][formatKeys[k]]);
+          } else {
+            for (let z = 0; z < data[i][formatKeys[k]].length; z += 1) {
+              // Объекты years
+              const elem = data[i][formatKeys[k]][z];
+              item.map((val) => {
+                if (val in elem) {
+                  this.table_headers = Funcs.addElementToArray(this.table_headers,
+                    indexator.j, this.translateTitle(`${formatKeys[k]}__${val}`));
+                  this.table_content[i] = Funcs.addElementToArray(this.table_content[i],
+                    indexator.j, elem[val]);
+                  indexator.j += 1;
+                }
+                return true;
+              });
+            }
+          }
+          indexator.j += 1;
+        }
+      }
+    },
+    translateTitle(title) {
+      const arr = this.getAppObject.table_labels;
+      let res = '';
+      arr.map((item) => {
+        if (item.name_1c === title) {
+          res = item.name_display;
+        }
+        return true;
+      });
+      return res;
     },
     showNotificaction(text, color) {
       this.notification_text = text;
@@ -202,6 +263,12 @@ export default {
         }
       }
       return false;
+    },
+    getHeaders() {
+      if (this.table_headers.length > 0) {
+        return this.table_headers;
+      }
+      return [];
     },
   },
   mounted() {
