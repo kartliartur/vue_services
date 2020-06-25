@@ -10,11 +10,11 @@
         </tr>
       </thead>
       <tr v-for="(item, idx) in tableContent" :key="idx"
-          @click="requestAction(item)"
-          :class="{ title: isLayout(item, 'Bold'),
-            padded: isLayout(item, 'Padding'),
+          @click="requestAction(item.data)"
+          :class="{ title: isLayout(item.data, 'Bold'),
+            padded: isLayout(item.data, 'Padding'),
             pointed: getApp.actions.length > 0 }">
-        <td v-for="(elem, i) in item" :key="i"
+        <td v-for="(elem, i) in item.row" :key="i"
           :style="{ width: (100/tableHeaders.length) + '%' }">
           {{ elem }}
         </td>
@@ -211,19 +211,27 @@ export default {
           null,
           'json',
           (res) => {
-            const arr = [];
-            res.data.data.map((item) => {
-              arr.push({
-                guid: item.File_GUID,
-                file_name: item.File_Name,
-                type: 'link',
-                file_extension: item.File_Extension,
+            if (!res.data.error) {
+              const arr = [];
+              res.data.data.map((item) => {
+                arr.push({
+                  guid: item.File_GUID,
+                  file_name: item.File_Name,
+                  type: 'link',
+                  file_extension: item.File_Extension,
+                });
+                return true;
               });
-              return true;
-            });
-            this.changeModalContent(this.activeObj.Document_Name, 'Список вложений', arr);
+              this.changeModalContent(this.activeObj.Document_Name, 'Список вложений', arr);
+              this.modalShow = true;
+            } else {
+              this.showNotificaction(res.data.report, '#c23616');
+            }
           },
-          () => { window.console.log('ERROR'); },
+          () => {
+            this.showNotificaction('Сервер временно недоступен', '#c23616');
+            this.modalShow = false;
+          },
         );
       } else {
         const keys = Object.keys(this.activeObj.Modal_array[0]);
@@ -245,8 +253,8 @@ export default {
             return true;
           });
         }
+        this.modalShow = true;
       }
-      this.modalShow = true;
     },
     downloadFileReq(flag, path, fileName, fileType, message, guid) {
       if ((new Date(this.actsDates.date_first) > new Date(this.actsDates.date_last) && flag)) {

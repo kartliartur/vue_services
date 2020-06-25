@@ -178,14 +178,17 @@ export default {
       });
       for (let i = 0; i < data.length; i += 1) {
         const indexator = { j: 0 }; // Индекс столбцов
-        this.table_content.push([]); // Пихаем пустой массив (создаем строку)
+        this.table_content.push({
+          data: data[i],
+          row: [],
+        }); // Пихаем пустой массив (создаем строку)
         const formatKeys = Object.keys(formatLables);
         for (let k = 0; k < formatKeys.length; k += 1) { // Ключи polymer и years
           const item = formatLables[formatKeys[k]];
           if (item.length === 0) {
             this.table_headers = Funcs.addElementToArray(this.table_headers,
               indexator.j, this.translateTitle(formatKeys[k]));
-            this.table_content[i] = Funcs.addElementToArray(this.table_content[i],
+            this.table_content[i].row = Funcs.addElementToArray(this.table_content[i].row,
               indexator.j, data[i][formatKeys[k]]);
           } else {
             for (let z = 0; z < data[i][formatKeys[k]].length; z += 1) {
@@ -195,7 +198,7 @@ export default {
                 if (val in elem) {
                   this.table_headers = Funcs.addElementToArray(this.table_headers,
                     indexator.j, this.translateTitle(`${formatKeys[k]}__${val}`));
-                  this.table_content[i] = Funcs.addElementToArray(this.table_content[i],
+                  this.table_content[i].row = Funcs.addElementToArray(this.table_content[i].row,
                     indexator.j, elem[val]);
                   indexator.j += 1;
                 }

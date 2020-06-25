@@ -23,16 +23,16 @@ export default new Vuex.Store({
   },
   actions: {
     async login(context, app) {
-      let cooks = document.cookie;
-      cooks = cooks.substring(cooks.indexOf('passport_session_id='));
-      cooks = cooks.replace('passport_session_id=', '');
+      // let cooks = document.cookie;
+      // cooks = cooks.substring(cooks.indexOf('passport_session_id='));
+      // cooks = cooks.replace('passport_session_id=', '');
       const promise = new Promise((resolve) => {
         if (context.state.user === null) {
           Funcs.doRequest(
             'post',
             `${context.state.base_url}/auth/data`,
             {
-              session: cooks,
+              session: 'b5vq57sskro00pttjgny05arsp1gebsx',
             },
             null,
             'json',
@@ -46,7 +46,7 @@ export default new Vuex.Store({
                 context.commit('categoriesMutation', res.data.data.categories);
                 context.commit('serCompanyName', res.data.data.user.company.short_name);
                 context.commit('setUser', res.data.data.user);
-                if (localStorage.getItem('admin_inn') === undefined && context.state.user.user.is_superuser === false) {
+                if (context.state.user.user.is_superuser === false) {
                   context.commit('setINN', res.data.data.user.company.inn);
                 } else {
                   context.commit('setINN', localStorage.getItem('admin_inn'));
