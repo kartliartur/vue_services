@@ -4,7 +4,7 @@
     <img src="../assets/images/settings2.svg" width="15px" title="Админ панель" class="hidden">
     <div class="inn-bar" v-show="modalShow">
       <h2>Панель администратора</h2>
-      <input type="text" placeholder="Введите инн компании"
+      <input type="text" placeholder="Введите ИНН компании"
         v-model="currentInn"
         :class="{ errorClass }">
       <button @click="innUpdate()">Обновить</button>
