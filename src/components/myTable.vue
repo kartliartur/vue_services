@@ -172,6 +172,7 @@ export default {
     requestAction(obj) {
       if (this.getApp.actions.length > 0) {
         this.activeObj = obj;
+        window.console.log(obj);
         if (this.getApp.actions[0] === 'open_modal') {
           this.openModalFunc(obj);
         } else if (this.getApp.actions[0] === 'download_file') {
@@ -244,14 +245,15 @@ export default {
           const item = this.modal_content[i];
           keys.map((elem) => {
             this.activeObj.Modal_array.map((val) => {
+              window.console.log(`${elem}  +  ${item.variable}`);
               if (elem === item.variable && !item.isFull) {
                 item.value.push(val[elem]);
               }
               return true;
             });
-            item.isFull = true;
             return true;
           });
+          item.isFull = true;
         }
         this.modalShow = true;
       }
